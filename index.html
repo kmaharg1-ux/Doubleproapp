@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PLSS 5-Point Restoration Tool</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <h2>PLSS 5-Point Restoration Tool</h2>
+
+  <div class="input-panel">
+    <label for="eA">Point A Easting (anchor):</label>
+    <input id="eA" type="number" placeholder="e.g. 500000" />
+    <label for="nA">Point A Northing (anchor):</label>
+    <input id="nA" type="number" placeholder="e.g. 5200000" />
+    <button onclick="setAnchor()">Set Anchor & Generate Grid</button>
+
+    <div id="stepPrompts" style="display:none;">
+      <p>Click to place Points A, B, C, D in order.</p>
+
+      <label for="eB">Point B Easting:</label>
+      <input id="eB" type="number" />
+      <label for="nB">Point B Northing:</label>
+      <input id="nB" type="number" />
+
+      <label for="eC">Point C Easting:</label>
+      <input id="eC" type="number" />
+      <label for="nC">Point C Northing:</label>
+      <input id="nC" type="number" />
+
+      <label for="eD">Point D Easting:</label>
+      <input id="eD" type="number" />
+      <label for="nD">Point D Northing:</label>
+      <input id="nD" type="number" />
+
+      <label for="dC">Record Distance C to Lost (chains):</label>
+      <input id="dC" type="number" />
+      <label for="dD">Record Distance D to Lost (chains):</label>
+      <input id="dD" type="number" />
+
+      <label for="dA">Record Distance A to Lost (chains):</label>
+      <input id="dA" type="number" />
+      <label for="dB">Record Distance B to Lost (chains):</label>
+      <input id="dB" type="number" />
+
+      <button onclick="restoreLostCorner()">Restore Lost Corner</button>
+      <button onclick="undoLast()">Undo Last</button>
+      <button onclick="resetAll()">Reset All</button>
+    </div>
+  </div>
+
+  <div id="canvasWrapper">
+    <canvas id="townshipCanvas" width="1200" height="1200"></canvas>
+  </div>
+
+  <div id="legend">
+    <p><strong>Legend:</strong></p>
+    <ul>
+      <li><span class="legend-box" style="background:blue;"></span> Known Points</li>
+      <li><span class="legend-box" style="background:red;"></span> Lost Corner</li>
+      <li><span class="legend-box" style="background:green;"></span> Restored Corner</li>
+    </ul>
+  </div>
+
+  <div id="liveCoords"></div>
+  <div id="pointLabels"></div>
+  <div id="result"></div>
+</body>
+</html>
