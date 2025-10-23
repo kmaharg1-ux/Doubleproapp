@@ -1,13 +1,5 @@
 let map;
-let anchors = {};
 let restoredMarker = null;
-
-const sectionMap = {
-  A: { section: 1, corner: "NW" },
-  B: { section: 6, corner: "NW" },
-  C: { section: 31, corner: "NE" },
-  D: { section: 36, corner: "NW" }
-};
 
 function initMap() {
   map = L.map('map', {
@@ -18,14 +10,12 @@ function initMap() {
   });
 
   L.tileLayer('', { attribution: '' }).addTo(map);
-  attachInputListeners();
-}
+  drawGrid();
 
-function attachInputListeners() {
-  const fields = ["northA", "northB", "eastC", "eastD", "recordNS", "measuredNS", "recordEW", "measuredEW"];
-  fields.forEach(id => {
+  ["sectionA", "cornerA", "sectionB", "cornerB", "sectionC", "cornerC", "sectionD", "cornerD",
+   "recordNS", "measuredNS", "recordEW", "measuredEW"].forEach(id => {
     document.getElementById(id).addEventListener("input", () => {
-      setAnchors();
+      drawAnchors();
       showProportions();
     });
   });
@@ -49,6 +39,7 @@ function getGridPosition(role, baseLat, baseLng, sectionSize = 0.05) {
     case "S":  return [baseLat, baseLng + half];
     case "E":  return [baseLat + half, baseLng + sectionSize];
     case "W":  return [baseLat + half, baseLng];
+    case "C":  return [baseLat + half, baseLng + half];
     default:   return [baseLat + half, baseLng + half];
   }
 }
@@ -65,50 +56,9 @@ function getSectionGridPosition(sectionNum, corner, baseLat, baseLng, sectionSiz
   return getGridPosition(corner, swLat, swLng, sectionSize);
 }
 
-function setAnchors() {
-  const northA = parseFloat(document.getElementById("northA").value);
-  const northB = parseFloat(document.getElementById("northB").value);
-  const eastC = parseFloat(document.getElementById("eastC").value);
-  const eastD = parseFloat(document.getElementById("eastD").value);
-
-  if ([northA, northB, eastC, eastD].some(isNaN)) return;
-
-  anchors = {
-    A: { northing: northA, easting: eastC },
-    B: { northing: northB, easting: eastC },
-    C: { northing: northA, easting: eastD },
-    D: { northing: northB, easting: eastD }
-  };
-
-  drawAnchors();
-  drawGrid();
-}
-
-function drawAnchors() {
-  map.eachLayer(layer => map.removeLayer(layer));
-  L.tileLayer('', { attribution: '' }).addTo(map);
-
-  const baseLat = anchors.B.northing / 100000;
-  const baseLng = anchors.D.easting / 100000;
-
-  for (const label of ["A", "B", "C", "D"]) {
-    const { section, corner } = sectionMap[label];
-    const [lat, lng] = getSectionGridPosition(section, corner, baseLat, baseLng);
-
-    L.circleMarker([lat, lng], {
-      radius: 6,
-      color: 'red',
-      fillColor: 'red',
-      fillOpacity: 0.8
-    }).addTo(map)
-      .bindTooltip(`Point ${label} (Sec ${section}, ${corner})`, { direction: "top" })
-      .bindPopup(`Point ${label}<br>Section: ${section}<br>Corner: ${corner}<br>Northing: ${(lat * 100000).toFixed(2)}<br>Easting: ${(lng * 100000).toFixed(2)}`);
-  }
-}
-
 function drawGrid() {
-  const baseLat = anchors.B.northing / 100000;
-  const baseLng = anchors.D.easting / 100000;
+  const baseLat = 46.6;
+  const baseLng = -112.0;
   const sectionSize = 0.05;
 
   for (let row = 0; row < 6; row++) {
@@ -151,6 +101,46 @@ function drawGrid() {
   }
 }
 
+function drawAnchors() {
+  const baseLat = 46.6;
+  const baseLng = -112.0;
+
+  const sectionMap = {
+    A: {
+      section: parseInt(document.getElementById("sectionA").value),
+      corner: document.getElementById("cornerA").value
+    },
+    B: {
+      section: parseInt(document.getElementById("sectionB").value),
+      corner: document.getElementById("cornerB").value
+    },
+    C: {
+      section: parseInt(document.getElementById("sectionC").value),
+      corner: document.getElementById("cornerC").value
+    },
+    D: {
+      section: parseInt(document.getElementById("sectionD").value),
+      corner: document.getElementById("cornerD").value
+    }
+  };
+
+  ["A", "B", "C", "D"].forEach(label => {
+    const { section, corner } = sectionMap[label];
+    if (!section || !corner) return;
+
+    const [lat, lng] = getSectionGridPosition(section, corner, baseLat, baseLng);
+
+    L.circleMarker([lat, lng], {
+      radius: 6,
+      color: 'red',
+      fillColor: 'red',
+      fillOpacity: 0.8
+    }).addTo(map)
+      .bindTooltip(`Point ${label} (Sec ${section}, ${corner})`, { direction: "top" })
+      .bindPopup(`Point ${label}<br>Section: ${section}<br>Corner: ${corner}`);
+  });
+}
+
 function showProportions() {
   const recordNS = parseDistance(document.getElementById("recordNS").value);
   const measuredNS = parseFloat(document.getElementById("measuredNS").value);
@@ -169,55 +159,13 @@ function showProportions() {
 }
 
 function restoreCorner() {
-  if (!anchors.A || !anchors.B || !anchors.C || !anchors.D) return;
-
-  const recordNS = parseDistance(document.getElementById("recordNS").value);
-  const measuredNS = parseFloat(document.getElementById("measuredNS").value);
-  const recordEW = parseDistance(document.getElementById("recordEW").value);
-  const measuredEW = parseFloat(document.getElementById("measuredEW").value);
-
-  if ([recordNS, measuredNS, recordEW, measuredEW].some(isNaN)) {
-    alert("Please enter valid record and measured distances.");
-    return;
-  }
-
-  const validNS = anchors.A.easting === anchors.B.easting;
-  const validEW = anchors.C.northing === anchors.D.northing;
-
-  if (!validNS || !validEW) {
-    document.getElementById("output").innerHTML =
-      `<strong>⚠️ Restoration Failed</strong><br>` +
-      `A and B must share the same easting (NS line).<br>` +
-      `C and D must share the same northing (EW line).<br>` +
-      `Try single proportioning or check corner type.`;
-    return;
-  }
-
-  const propNS = measuredNS / recordNS;
-  const propEW = measuredEW / recordEW;
-
-  const northing = anchors.B.northing + propNS * (anchors.A.northing - anchors.B.northing);
-  const easting = anchors.D.easting + propEW * (anchors.C.easting - anchors.D.easting);
-
-  const lat = northing / 100000;
-  const lng = easting / 100000;
-
-  if (restoredMarker) map.removeLayer(restoredMarker);
-
-  restoredMarker = L.circleMarker([lat, lng], {
-    radius: 6,
-    color: 'green',
-    fillColor: 'green',
-    fillOpacity: 0.8,
-    className: 'restored'
-  }).addTo(map)
-    .bindTooltip("Restored Corner", { direction: "top" })
-    .bindPopup(`Restored Corner<br>Northing: ${northing.toFixed(2)}<br>Easting: ${easting.toFixed(2)}`);
+  document.getElementById("output").innerHTML =
+    `<strong>Restoration logic not yet wired to section-based anchors.</strong><br>` +
+    `Once A–D are defined by section and corner, we’ll use their positions to calculate the restored corner.`;
 }
 
 function resetMap() {
-  anchors = {};
-  restoredMarker = null;
   map.eachLayer(layer => map.removeLayer(layer));
   L.tileLayer('', { attribution: '' }).addTo(map);
+  drawGrid();
 }
