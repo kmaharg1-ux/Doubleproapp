@@ -68,17 +68,34 @@ function placePin(section, corner, label, color = "red") {
   cell.appendChild(pin);
 }
 
+function drawOverlay(lines) {
+  const svg = document.getElementById("overlay");
+  svg.innerHTML = "";
+  lines.forEach(([x1, y1, x2, y2], i) => {
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    line.setAttribute("stroke", i === 2 ? "green" : "gray");
+    line.setAttribute("stroke-width", 2);
+    svg.appendChild(line);
+  });
+}
+
 function updateAnchors() {
   buildGrid();
 
-  // Place red pins for A–D
-  ["A", "B", "C", "D"].forEach(label => {
-    const section = document.getElementById(`section${label}`).value;
-    const corner = document.getElementById(`corner${label}`).value;
-    if (section && corner) placePin(section, corner, label, "red");
-  });
+  const A = getGridPosition(document.getElementById("sectionA").value, document.getElementById("cornerA").value);
+  const B = getGridPosition(document.getElementById("sectionB").value, document.getElementById("cornerB").value);
+  const C = getGridPosition(document.getElementById("sectionC").value, document.getElementById("cornerC").value);
+  const D = getGridPosition(document.getElementById("sectionD").value, document.getElementById("cornerD").value);
 
-  // Get inputs for double proportion
+  if (A) placePin(document.getElementById("sectionA").value, document.getElementById("cornerA").value, "A", "red");
+  if (B) placePin(document.getElementById("sectionB").value, document.getElementById("cornerB").value, "B", "red");
+  if (C) placePin(document.getElementById("sectionC").value, document.getElementById("cornerC").value, "C", "red");
+  if (D) placePin(document.getElementById("sectionD").value, document.getElementById("cornerD").value, "D", "red");
+
   const northingA = parseFloat(document.getElementById("northingA").value);
   const northingB = parseFloat(document.getElementById("northingB").value);
   const recordAB = parseFloat(document.getElementById("recordAB").value);
@@ -90,6 +107,7 @@ function updateAnchors() {
   const measuredCD = parseFloat(document.getElementById("measuredCD").value);
 
   if (
+    !A || !B || !C || !D ||
     isNaN(northingA) || isNaN(northingB) || isNaN(recordAB) || isNaN(measuredAB) ||
     isNaN(eastingC) || isNaN(eastingD) || isNaN(recordCD) || isNaN(measuredCD)
   ) return;
@@ -100,11 +118,16 @@ function updateAnchors() {
   const restoredNorthing = northingA + nsRatio * (northingB - northingA);
   const restoredEasting = eastingC + ewRatio * (eastingD - eastingC);
 
-  // Convert restored coordinates to grid pixel position
-  const gridX = (restoredEasting / 6000) * 600; // 6 columns × 100px
-  const gridY = (restoredNorthing / 6000) * 600; // 6 rows × 100px
+  const gridX = (restoredEasting / 6000) * 600;
+  const gridY = (restoredNorthing / 6000) * 600;
 
   placePinAtGridXY(gridX, gridY, "Restored Corner", "green");
+
+  drawOverlay([
+    [A.x, A.y, B.x, B.y],
+    [C.x, C.y, D.x, D.y],
+    [gridX, gridY, gridX, gridY]
+  ]);
 }
 
 function resetGrid() {
@@ -117,6 +140,7 @@ function resetGrid() {
     "recordCD", "measuredCD"
   ];
   ids.forEach(id => document.getElementById(id).value = "");
+  document.getElementById("overlay").innerHTML = "";
   buildGrid();
 }
 
