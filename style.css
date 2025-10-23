@@ -37,7 +37,7 @@ label {
   min-width: 120px;
 }
 
-input {
+input, select {
   padding: 0.4em;
   font-size: 1em;
   border: 1px solid #ccc;
