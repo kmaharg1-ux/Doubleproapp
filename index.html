@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PLSS Restoration Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <h2>🧭 PLSS Double Proportion Restoration Tool</h2>
+
+  <div id="map"></div>
+
+  <h3>➕ Add Known Corner</h3>
+  <label>Section Number</label>
+  <select id="knownSection">
+    <option value="">Select Section</option>
+    <!-- Sections 1–36 -->
+    <script>
+      for (let i = 1; i <= 36; i++) {
+        document.write(`<option value="${i}">Section ${i}</option>`);
+      }
+    </script>
+  </select>
+
+  <label>Corner Type</label>
+  <select id="knownCornerType">
+    <option value="">Select Corner</option>
+    <option value="NW">NW</option><option value="NE">NE</option><option value="SW">SW</option><option value="SE">SE</option>
+    <option value="N¼">N¼</option><option value="S¼">S¼</option><option value="E¼">E¼</option><option value="W¼">W¼</option>
+    <option value="C">Center</option>
+  </select>
+
+  <label>Northing (ft)</label>
+  <input id="knownNorthing" placeholder="e.g. 100000">
+  <label>Easting (ft)</label>
+  <input id="knownEasting" placeholder="e.g. 500000">
+  <button onclick="addKnownCorner()">Add Known Corner</button>
+
+  <h3>🎯 Select Lost Corner to Restore</h3>
+  <label>Section Number</label>
+  <select id="targetSection">
+    <option value="">Select Section</option>
+    <!-- Sections 1–36 -->
+    <script>
+      for (let i = 1; i <= 36; i++) {
+        document.write(`<option value="${i}">Section ${i}</option>`);
+      }
+    </script>
+  </select>
+
+  <label>Corner Type</label>
+  <select id="targetCornerType">
+    <option value="">Select Corner</option>
+    <option value="NW">NW</option><option value="NE">NE</option><option value="SW">SW</option><option value="SE">SE</option>
+    <option value="N¼">N¼</option><option value="S¼">S¼</option><option value="E¼">E¼</option><option value="W¼">W¼</option>
+    <option value="C">Center</option>
+  </select>
+
+  <h3>📏 Record Distances (Chains)</h3>
+  <label>Called From</label>
+  <select id="recordFromCorner">
+    <option value="">Select Known Corner</option>
+  </select>
+
+  <label>North</label><input id="recordN" placeholder="e.g. 80ch">
+  <label>South</label><input id="recordS" placeholder="e.g. 80ch">
+  <label>East</label><input id="recordE" placeholder="e.g. 80ch">
+  <label>West</label><input id="recordW" placeholder="e.g. 80ch">
+
+  <h3>📐 Measured Distances (Feet)</h3>
+  <label>North</label><input id="measuredN" placeholder="e.g. 5280">
+  <label>South</label><input id="measuredS" placeholder="e.g. 5280">
+  <label>East</label><input id="measuredE" placeholder="e.g. 5280">
+  <label>West</label><input id="measuredW" placeholder="e.g. 5280">
+
+  <button onclick="restoreCorner()">Restore Lost Corner</button>
+
+  <div id="output" style="margin-top: 20px; font-size: 1.1em;"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
