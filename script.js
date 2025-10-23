@@ -1,171 +1,105 @@
-let map;
-let restoredMarker = null;
+const grid = document.getElementById("grid");
 
-function initMap() {
-  map = L.map('map', {
-    center: [46.6, -112.0],
-    zoom: 14,
-    zoomControl: true,
-    attributionControl: false
-  });
-
-  L.tileLayer('', { attribution: '' }).addTo(map);
-  drawGrid();
-
-  ["sectionA", "cornerA", "sectionB", "cornerB", "sectionC", "cornerC", "sectionD", "cornerD",
-   "recordNS", "measuredNS", "recordEW", "measuredEW"].forEach(id => {
-    document.getElementById(id).addEventListener("input", () => {
-      drawAnchors();
-      showProportions();
-    });
-  });
+function serpentineSection(row, col) {
+  return row % 2 === 0 ? 6 * row + (6 - col) : 6 * row + (col + 1);
 }
 
-function parseDistance(val) {
-  if (!val) return 0;
-  val = val.toLowerCase().trim();
-  if (val.includes("ch")) return parseFloat(val) * 66;
-  return parseFloat(val);
-}
-
-function getGridPosition(role, baseLat, baseLng, sectionSize = 0.05) {
-  const half = sectionSize / 2;
-  switch (role) {
-    case "NE": return [baseLat + sectionSize, baseLng + sectionSize];
-    case "NW": return [baseLat + sectionSize, baseLng];
-    case "SE": return [baseLat, baseLng + sectionSize];
-    case "SW": return [baseLat, baseLng];
-    case "N":  return [baseLat + sectionSize, baseLng + half];
-    case "S":  return [baseLat, baseLng + half];
-    case "E":  return [baseLat + half, baseLng + sectionSize];
-    case "W":  return [baseLat + half, baseLng];
-    case "C":  return [baseLat + half, baseLng + half];
-    default:   return [baseLat + half, baseLng + half];
-  }
-}
-
-function getSectionGridPosition(sectionNum, corner, baseLat, baseLng, sectionSize = 0.05) {
-  const row = Math.floor((sectionNum - 1) / 6);
-  const col = (row % 2 === 0)
-    ? 5 - ((sectionNum - 1) % 6)
-    : (sectionNum - 1) % 6;
-
-  const swLat = baseLat + row * sectionSize;
-  const swLng = baseLng + col * sectionSize;
-
-  return getGridPosition(corner, swLat, swLng, sectionSize);
-}
-
-function drawGrid() {
-  const baseLat = 46.6;
-  const baseLng = -112.0;
-  const sectionSize = 0.05;
-
+function buildGrid() {
+  grid.innerHTML = "";
   for (let row = 0; row < 6; row++) {
     for (let col = 0; col < 6; col++) {
-      const sectionNum = row % 2 === 0 ? 6 * row + (6 - col) : 6 * row + (col + 1);
-      const sw = [baseLat + row * sectionSize, baseLng + col * sectionSize];
-      const ne = [sw[0] + sectionSize, sw[1] + sectionSize];
-
-      L.rectangle([sw, ne], {
-        color: '#333',
-        weight: 2,
-        fill: false
-      }).addTo(map);
-
-      const center = [(sw[0] + ne[0]) / 2, (sw[1] + ne[1]) / 2];
-      L.marker(center, {
-        icon: L.divIcon({
-          className: 'section-label',
-          html: `<div>${sectionNum}</div>`
-        })
-      }).addTo(map);
-
-      const midpoints = [
-        [(sw[0] + ne[0]) / 2, sw[1]],
-        [(sw[0] + ne[0]) / 2, ne[1]],
-        [sw[0], (sw[1] + ne[1]) / 2],
-        [ne[0], (sw[1] + ne[1]) / 2],
-        [(sw[0] + ne[0]) / 2, (sw[1] + ne[1]) / 2]
-      ];
-
-      midpoints.forEach(pt => {
-        L.circleMarker(pt, {
-          radius: 3,
-          color: '#555',
-          fillColor: '#ccc',
-          fillOpacity: 0.6
-        }).addTo(map);
-      });
+      const section = serpentineSection(row, col);
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.dataset.section = section;
+      cell.dataset.row = row;
+      cell.dataset.col = col;
+      cell.innerText = section;
+      grid.appendChild(cell);
     }
   }
 }
 
-function drawAnchors() {
-  const baseLat = 46.6;
-  const baseLng = -112.0;
-
-  const sectionMap = {
-    A: {
-      section: parseInt(document.getElementById("sectionA").value),
-      corner: document.getElementById("cornerA").value
-    },
-    B: {
-      section: parseInt(document.getElementById("sectionB").value),
-      corner: document.getElementById("cornerB").value
-    },
-    C: {
-      section: parseInt(document.getElementById("sectionC").value),
-      corner: document.getElementById("cornerC").value
-    },
-    D: {
-      section: parseInt(document.getElementById("sectionD").value),
-      corner: document.getElementById("cornerD").value
-    }
+function getCornerOffset(corner) {
+  const offset = {
+    NW: [10, 10],
+    NE: [90, 10],
+    SW: [10, 90],
+    SE: [90, 90],
+    N:  [50, 10],
+    S:  [50, 90],
+    E:  [90, 50],
+    W:  [10, 50],
+    C:  [50, 50]
   };
+  return offset[corner] || [50, 50];
+}
 
-  ["A", "B", "C", "D"].forEach(label => {
-    const { section, corner } = sectionMap[label];
-    if (!section || !corner) return;
+function getGridPosition(section, corner) {
+  const cell = [...grid.children].find(c => c.dataset.section == section);
+  if (!cell) return null;
 
-    const [lat, lng] = getSectionGridPosition(section, corner, baseLat, baseLng);
+  const row = parseInt(cell.dataset.row);
+  const col = parseInt(cell.dataset.col);
+  const [dx, dy] = getCornerOffset(corner);
 
-    L.circleMarker([lat, lng], {
-      radius: 6,
-      color: 'red',
-      fillColor: 'red',
-      fillOpacity: 0.8
-    }).addTo(map)
-      .bindTooltip(`Point ${label} (Sec ${section}, ${corner})`, { direction: "top" })
-      .bindPopup(`Point ${label}<br>Section: ${section}<br>Corner: ${corner}`);
+  return { x: col * 100 + dx, y: row * 100 + dy };
+}
+
+function placePin(section, corner, label, color = "red") {
+  const cell = [...grid.children].find(c => c.dataset.section == section);
+  if (!cell) return;
+
+  const [x, y] = getCornerOffset(corner);
+  const pin = document.createElement("div");
+  pin.className = `pin ${color}`;
+  pin.style.left = `${x - 5}px`;
+  pin.style.top = `${y - 5}px`;
+  pin.title = `${label}: Sec ${section} ${corner}`;
+  cell.appendChild(pin);
+}
+
+function updateAnchors() {
+  buildGrid();
+
+  const points = ["A", "B", "C", "D"].map(label => {
+    const section = document.getElementById(`section${label}`).value;
+    const corner = document.getElementById(`corner${label}`).value;
+    if (section && corner) {
+      placePin(section, corner, label, "red");
+      return getGridPosition(section, corner);
+    }
+    return null;
   });
-}
 
-function showProportions() {
-  const recordNS = parseDistance(document.getElementById("recordNS").value);
+  const [A, B, C, D] = points;
+  if (!A || !B || !C || !D) return;
+
+  const recordNS = parseFloat(document.getElementById("recordNS").value);
   const measuredNS = parseFloat(document.getElementById("measuredNS").value);
-  const recordEW = parseDistance(document.getElementById("recordEW").value);
+  const recordEW = parseFloat(document.getElementById("recordEW").value);
   const measuredEW = parseFloat(document.getElementById("measuredEW").value);
+  if (!recordNS || !measuredNS || !recordEW || !measuredEW) return;
 
-  if ([recordNS, measuredNS, recordEW, measuredEW].some(isNaN)) return;
+  const nsRatio = measuredNS / recordNS;
+  const ewRatio = measuredEW / recordEW;
 
-  const propNS = measuredNS / recordNS;
-  const propEW = measuredEW / recordEW;
+  const restoredX = C.x + ewRatio * (D.x - C.x);
+  const restoredY = A.y + nsRatio * (B.y - A.y);
 
-  document.getElementById("output").innerHTML =
-    `<strong>Proportion Preview</strong><br>` +
-    `NS Proportion: ${propNS.toFixed(3)} (Measured: ${measuredNS}, Record: ${recordNS})<br>` +
-    `EW Proportion: ${propEW.toFixed(3)} (Measured: ${measuredEW}, Record: ${recordEW})`;
+  const pin = document.createElement("div");
+  pin.className = "pin green";
+  pin.style.left = `${restoredX - 5}px`;
+  pin.style.top = `${restoredY - 5}px`;
+  pin.title = `Restored Corner`;
+  grid.appendChild(pin);
 }
 
-function restoreCorner() {
-  document.getElementById("output").innerHTML =
-    `<strong>Restoration logic not yet wired to section-based anchors.</strong><br>` +
-    `Once A–D are defined by section and corner, we’ll use their positions to calculate the restored corner.`;
+function resetGrid() {
+  ["sectionA", "sectionB", "sectionC", "sectionD", "recordNS", "measuredNS", "recordEW", "measuredEW"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+  buildGrid();
 }
 
-function resetMap() {
-  map.eachLayer(layer => map.removeLayer(layer));
-  L.tileLayer('', { attribution: '' }).addTo(map);
-  drawGrid();
-}
+buildGrid();
