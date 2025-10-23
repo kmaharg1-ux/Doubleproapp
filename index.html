@@ -73,21 +73,11 @@
       </select>
     </label>
 
-    <h2>Restored Corner</h2>
-    <label>Restored Section: <input id="restoredSection" type="number" min="1" max="36" /></label>
-    <label>Restored Corner:
-      <select id="restoredCorner">
-        <option value="NW">NW</option>
-        <option value="NE">NE</option>
-        <option value="SW">SW</option>
-        <option value="SE">SE</option>
-        <option value="N">N (Quarter)</option>
-        <option value="S">S (Quarter)</option>
-        <option value="E">E (Quarter)</option>
-        <option value="W">W (Quarter)</option>
-        <option value="C">Center</option>
-      </select>
-    </label>
+    <h2>Measured Distances</h2>
+    <label>Record NS: <input id="recordNS" type="number" /></label>
+    <label>Measured NS: <input id="measuredNS" type="number" /></label>
+    <label>Record EW: <input id="recordEW" type="number" /></label>
+    <label>Measured EW: <input id="measuredEW" type="number" /></label>
 
     <button onclick="updateAnchors()">Update Anchors</button>
     <button onclick="resetGrid()">Reset</button>
