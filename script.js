@@ -193,4 +193,5 @@ function restoreCorner() {
     className: 'restored'
   }).addTo(map)
     .bindTooltip("Restored Corner", { direction: "top" })
-    .bindPopup(`Restored Corner<br>Northing: ${northing.toFixed(3)}<br>Easting: ${easting.toFixed(3)}<
+    .bindPopup(`Restored Corner<br>Northing: ${northing.toFixed(3)}<br>Easting: ${easting.toFixed(3)}`);
+
