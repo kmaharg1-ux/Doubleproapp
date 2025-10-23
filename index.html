@@ -27,6 +27,7 @@
         <option value="C">Center</option>
       </select>
     </label>
+    <label>A Northing: <input id="northingA" type="number" /></label>
 
     <label>B Section: <input id="sectionB" type="number" min="1" max="36" /></label>
     <label>B Corner:
@@ -42,6 +43,10 @@
         <option value="C">Center</option>
       </select>
     </label>
+    <label>B Northing: <input id="northingB" type="number" /></label>
+
+    <label>Record Distance A–B: <input id="recordAB" type="number" /></label>
+    <label>Measured Distance A–B: <input id="measuredAB" type="number" /></label>
 
     <label>C Section: <input id="sectionC" type="number" min="1" max="36" /></label>
     <label>C Corner:
@@ -57,6 +62,7 @@
         <option value="C">Center</option>
       </select>
     </label>
+    <label>C Easting: <input id="eastingC" type="number" /></label>
 
     <label>D Section: <input id="sectionD" type="number" min="1" max="36" /></label>
     <label>D Corner:
@@ -72,12 +78,10 @@
         <option value="C">Center</option>
       </select>
     </label>
+    <label>D Easting: <input id="eastingD" type="number" /></label>
 
-    <h2>Measured Distances</h2>
-    <label>Record NS: <input id="recordNS" type="number" /></label>
-    <label>Measured NS: <input id="measuredNS" type="number" /></label>
-    <label>Record EW: <input id="recordEW" type="number" /></label>
-    <label>Measured EW: <input id="measuredEW" type="number" /></label>
+    <label>Record Distance C–D: <input id="recordCD" type="number" /></label>
+    <label>Measured Distance C–D: <input id="measuredCD" type="number" /></label>
 
     <button onclick="updateAnchors()">Update Anchors</button>
     <button onclick="resetGrid()">Reset</button>
