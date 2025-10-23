@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLSS Restoration Tool</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body onload="initMap()">
+  <div id="map"></div>
+
+  <div id="controls">
+    <h2>Anchor Inputs (Northing/Easting in feet)</h2>
+    <label>A Northing: <input id="northA" /></label>
+    <label>B Northing: <input id="northB" /></label>
+    <label>C Easting: <input id="eastC" /></label>
+    <label>D Easting: <input id="eastD" /></label>
+
+    <h2>Distances</h2>
+    <label>Record NS: <input id="recordNS" /></label>
+    <label>Measured NS: <input id="measuredNS" /></label>
+    <label>Record EW: <input id="recordEW" /></label>
+    <label>Measured EW: <input id="measuredEW" /></label>
+
+    <button onclick="restoreCorner()">Restore Lost Corner</button>
+    <button onclick="resetMap()">Reset</button>
+
+    <div id="output"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
