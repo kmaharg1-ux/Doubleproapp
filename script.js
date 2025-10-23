@@ -46,6 +46,15 @@ function getGridPosition(section, corner) {
   return { x: col * 100 + dx, y: row * 100 + dy };
 }
 
+function placePinAtGridXY(x, y, label, color = "green") {
+  const pin = document.createElement("div");
+  pin.className = `pin ${color}`;
+  pin.style.left = `${x - 5}px`;
+  pin.style.top = `${y - 5}px`;
+  pin.title = `${label}`;
+  grid.appendChild(pin);
+}
+
 function placePin(section, corner, label, color = "red") {
   const cell = [...grid.children].find(c => c.dataset.section == section);
   if (!cell) return;
@@ -62,43 +71,52 @@ function placePin(section, corner, label, color = "red") {
 function updateAnchors() {
   buildGrid();
 
-  const points = ["A", "B", "C", "D"].map(label => {
+  // Place red pins for A–D
+  ["A", "B", "C", "D"].forEach(label => {
     const section = document.getElementById(`section${label}`).value;
     const corner = document.getElementById(`corner${label}`).value;
-    if (section && corner) {
-      placePin(section, corner, label, "red");
-      return getGridPosition(section, corner);
-    }
-    return null;
+    if (section && corner) placePin(section, corner, label, "red");
   });
 
-  const [A, B, C, D] = points;
-  if (!A || !B || !C || !D) return;
+  // Get inputs for double proportion
+  const northingA = parseFloat(document.getElementById("northingA").value);
+  const northingB = parseFloat(document.getElementById("northingB").value);
+  const recordAB = parseFloat(document.getElementById("recordAB").value);
+  const measuredAB = parseFloat(document.getElementById("measuredAB").value);
 
-  const recordNS = parseFloat(document.getElementById("recordNS").value);
-  const measuredNS = parseFloat(document.getElementById("measuredNS").value);
-  const recordEW = parseFloat(document.getElementById("recordEW").value);
-  const measuredEW = parseFloat(document.getElementById("measuredEW").value);
-  if (!recordNS || !measuredNS || !recordEW || !measuredEW) return;
+  const eastingC = parseFloat(document.getElementById("eastingC").value);
+  const eastingD = parseFloat(document.getElementById("eastingD").value);
+  const recordCD = parseFloat(document.getElementById("recordCD").value);
+  const measuredCD = parseFloat(document.getElementById("measuredCD").value);
 
-  const nsRatio = measuredNS / recordNS;
-  const ewRatio = measuredEW / recordEW;
+  if (
+    isNaN(northingA) || isNaN(northingB) || isNaN(recordAB) || isNaN(measuredAB) ||
+    isNaN(eastingC) || isNaN(eastingD) || isNaN(recordCD) || isNaN(measuredCD)
+  ) return;
 
-  const restoredX = C.x + ewRatio * (D.x - C.x);
-  const restoredY = A.y + nsRatio * (B.y - A.y);
+  const nsRatio = measuredAB / recordAB;
+  const ewRatio = measuredCD / recordCD;
 
-  const pin = document.createElement("div");
-  pin.className = "pin green";
-  pin.style.left = `${restoredX - 5}px`;
-  pin.style.top = `${restoredY - 5}px`;
-  pin.title = `Restored Corner`;
-  grid.appendChild(pin);
+  const restoredNorthing = northingA + nsRatio * (northingB - northingA);
+  const restoredEasting = eastingC + ewRatio * (eastingD - eastingC);
+
+  // Convert restored coordinates to grid pixel position
+  const gridX = (restoredEasting / 6000) * 600; // 6 columns × 100px
+  const gridY = (restoredNorthing / 6000) * 600; // 6 rows × 100px
+
+  placePinAtGridXY(gridX, gridY, "Restored Corner", "green");
 }
 
 function resetGrid() {
-  ["sectionA", "sectionB", "sectionC", "sectionD", "recordNS", "measuredNS", "recordEW", "measuredEW"].forEach(id => {
-    document.getElementById(id).value = "";
-  });
+  const ids = [
+    "sectionA", "cornerA", "northingA",
+    "sectionB", "cornerB", "northingB",
+    "recordAB", "measuredAB",
+    "sectionC", "cornerC", "eastingC",
+    "sectionD", "cornerD", "eastingD",
+    "recordCD", "measuredCD"
+  ];
+  ids.forEach(id => document.getElementById(id).value = "");
   buildGrid();
 }
 
