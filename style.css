@@ -1,0 +1,89 @@
+body {
+  font-family: sans-serif;
+  padding: 1em;
+  margin: auto;
+  max-width: 900px;
+  background: #f9f9f9;
+  color: #333;
+}
+
+h2, h3 {
+  margin-top: 1.5em;
+  color: #2c3e50;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+
+input, select, button {
+  padding: 8px;
+  margin: 5px 0 15px 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #2c3e50;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #34495e;
+}
+
+#map {
+  height: 50vh;
+  margin-top: 20px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+}
+
+.corner-list {
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
+.corner-list span {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.grid-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.grid-inputs input {
+  flex: 1 1 15%;
+  min-width: 60px;
+}
+
+#output {
+  background: #eef;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccd;
+}
+
+@media (max-width: 600px) {
+  #map {
+    height: 40vh;
+  }
+
+  .grid-inputs input {
+    flex: 1 1 45%;
+  }
+
+  input, select, button {
+    font-size: 1em;
+  }
+}
