@@ -12,11 +12,31 @@
   <div id="map"></div>
 
   <div id="controls">
-    <h2>Anchor Inputs (Northing/Easting in feet)</h2>
-    <label>A Northing: <input id="northA" /></label>
-    <label>B Northing: <input id="northB" /></label>
-    <label>C Easting: <input id="eastC" /></label>
-    <label>D Easting: <input id="eastD" /></label>
+    <h2>Define Anchor Points</h2>
+    <label>A Section: <input id="sectionA" type="number" min="1" max="36" /></label>
+    <label>A Corner:
+      <select id="cornerA">
+        <option value="NW">NW</option>
+        <option value="NE">NE</option>
+        <option value="SW">SW</option>
+        <option value="SE">SE</option>
+        <option value="N">N (Quarter)</option>
+        <option value="S">S (Quarter)</option>
+        <option value="E">E (Quarter)</option>
+        <option value="W">W (Quarter)</option>
+        <option value="C">Center</option>
+      </select>
+    </label>
+
+    <!-- Repeat for B, C, D -->
+    <label>B Section: <input id="sectionB" type="number" min="1" max="36" /></label>
+    <label>B Corner: <select id="cornerB">...</select></label>
+
+    <label>C Section: <input id="sectionC" type="number" min="1" max="36" /></label>
+    <label>C Corner: <select id="cornerC">...</select></label>
+
+    <label>D Section: <input id="sectionD" type="number" min="1" max="36" /></label>
+    <label>D Corner: <select id="cornerD">...</select></label>
 
     <h2>Distances</h2>
     <label>Record NS: <input id="recordNS" /></label>
