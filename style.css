@@ -1,47 +1,70 @@
 body {
+  font-family: sans-serif;
   margin: 0;
-  font-family: system-ui, sans-serif;
-  display: flex;
-  flex-direction: column;
-  background: #f0f0f0;
+  padding: 1em;
+  background: #f5f5f5;
 }
 
-#map {
-  height: 60vh;
-  width: 100%;
-  border-bottom: 2px solid #ccc;
+h1 {
+  text-align: center;
+  margin-bottom: 1em;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(6, 100px); /* Columns = northings */
+  grid-template-rows: repeat(6, 100px);    /* Rows = eastings */
+  gap: 2px;
+  margin: 0 auto 2em;
+  width: max-content;
+}
+
+.cell {
+  background: #fff;
+  border: 1px solid #999;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.pin {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.pin.red {
+  background: red;
+}
+
+.pin.green {
+  background: green;
 }
 
 #controls {
-  padding: 1em;
-  background: #fff;
   display: flex;
   flex-wrap: wrap;
   gap: 1em;
-  align-items: flex-start;
-  justify-content: flex-start;
-}
-
-#controls h2 {
-  width: 100%;
-  margin: 0.5em 0 0.2em;
-  font-size: 1.1em;
-  color: #333;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 label {
   display: flex;
   flex-direction: column;
   font-size: 0.9em;
-  color: #444;
   min-width: 120px;
 }
 
 input, select {
   padding: 0.4em;
   font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   margin-top: 0.2em;
 }
 
@@ -57,46 +80,4 @@ button {
 
 button:hover {
   background: #3a8f5c;
-}
-
-#output {
-  width: 100%;
-  margin-top: 1em;
-  font-size: 0.95em;
-  background: #eef;
-  padding: 0.75em;
-  border-left: 4px solid #88c;
-  border-radius: 4px;
-}
-
-.section-label {
-  text-align: center;
-  font-weight: bold;
-  color: #222;
-  font-size: 12px;
-  pointer-events: none;
-}
-
-.drop-pin {
-  stroke: white;
-  stroke-width: 1;
-}
-
-.restored {
-  stroke: black;
-  stroke-width: 1;
-}
-
-@media (max-width: 600px) {
-  #controls {
-    flex-direction: column;
-  }
-
-  label {
-    width: 100%;
-  }
-
-  button {
-    width: 100%;
-  }
 }
