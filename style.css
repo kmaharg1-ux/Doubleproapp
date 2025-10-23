@@ -1,0 +1,46 @@
+body {
+  font-family: sans-serif;
+  padding: 1em;
+  margin: auto;
+  max-width: 900px;
+}
+input, select, button {
+  padding: 8px;
+  margin: 5px 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+label {
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+#map {
+  height: 50vh;
+  margin-top: 20px;
+}
+.corner-list {
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+.corner-list span {
+  display: inline-block;
+  margin-right: 10px;
+}
+.grid-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.grid-inputs input {
+  flex: 1 1 15%;
+  min-width: 60px;
+}
+@media (max-width: 600px) {
+  #map {
+    height: 40vh;
+  }
+  .grid-inputs input {
+    flex: 1 1 45%;
+  }
+}
