@@ -21,30 +21,27 @@ function buildGrid() {
   }
 }
 
-function getCornerOffset(corner) {
-  const offset = {
-    NW: [10, 10],
-    NE: [90, 10],
-    SW: [10, 90],
-    SE: [90, 90],
-    N:  [50, 10],
-    S:  [50, 90],
-    E:  [90, 50],
-    W:  [10, 50],
-    C:  [50, 50]
-  };
-  return offset[corner] || [50, 50];
-}
-
 function getGridPosition(section, corner) {
   const cell = [...grid.children].find(c => c.dataset.section == section);
   if (!cell) return null;
 
   const row = parseInt(cell.dataset.row);
   const col = parseInt(cell.dataset.col);
-  const [dx, dy] = getCornerOffset(corner);
+  const x = col * 100;
+  const y = row * 100;
 
-  return { x: col * 100 + dx, y: row * 100 + dy };
+  switch (corner) {
+    case "NW": return { x, y };
+    case "NE": return { x: x + 100, y };
+    case "SW": return { x, y: y + 100 };
+    case "SE": return { x: x + 100, y: y + 100 };
+    case "N":  return { x: x + 50, y };
+    case "S":  return { x: x + 50, y: y + 100 };
+    case "E":  return { x: x + 100, y: y + 50 };
+    case "W":  return { x, y: y + 50 };
+    case "C":  return { x: x + 50, y: y + 50 };
+    default:   return { x: x + 50, y: y + 50 };
+  }
 }
 
 function placePinAtGridXY(x, y, label, color = "green") {
@@ -54,19 +51,6 @@ function placePinAtGridXY(x, y, label, color = "green") {
   pin.style.top = `${y - 8}px`;
   pin.title = `${label}`;
   grid.appendChild(pin);
-}
-
-function placePin(section, corner, label, color = "red") {
-  const cell = [...grid.children].find(c => c.dataset.section == section);
-  if (!cell) return;
-
-  const [x, y] = getCornerOffset(corner);
-  const pin = document.createElement("div");
-  pin.className = `pin ${color}`;
-  pin.style.left = `${x - 8}px`;
-  pin.style.top = `${y - 8}px`;
-  pin.title = `${label}: Sec ${section} ${corner}`;
-  cell.appendChild(pin);
 }
 
 function drawOverlay(lines) {
@@ -94,10 +78,10 @@ function updateAnchors() {
   C = getGridPosition(document.getElementById("sectionC").value, document.getElementById("cornerC").value);
   D = getGridPosition(document.getElementById("sectionD").value, document.getElementById("cornerD").value);
 
-  if (A) placePin(document.getElementById("sectionA").value, document.getElementById("cornerA").value, "A", "red");
-  if (B) placePin(document.getElementById("sectionB").value, document.getElementById("cornerB").value, "B", "red");
-  if (C) placePin(document.getElementById("sectionC").value, document.getElementById("cornerC").value, "C", "red");
-  if (D) placePin(document.getElementById("sectionD").value, document.getElementById("cornerD").value, "D", "red");
+  if (A) placePinAtGridXY(A.x, A.y, "A", "red");
+  if (B) placePinAtGridXY(B.x, B.y, "B", "red");
+  if (C) placePinAtGridXY(C.x, C.y, "C", "red");
+  if (D) placePinAtGridXY(D.x, D.y, "D", "red");
 
   if (A && B && C && D) {
     drawOverlay([
