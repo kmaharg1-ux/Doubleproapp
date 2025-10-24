@@ -1,4 +1,5 @@
 const grid = document.getElementById("grid");
+const mathOutput = document.getElementById("mathOutput");
 
 function serpentineSection(row, col) {
   return row % 2 === 0 ? 6 * row + (6 - col) : 6 * row + (col + 1);
@@ -49,8 +50,8 @@ function getGridPosition(section, corner) {
 function placePinAtGridXY(x, y, label, color = "green") {
   const pin = document.createElement("div");
   pin.className = `pin ${color}`;
-  pin.style.left = `${x - 5}px`;
-  pin.style.top = `${y - 5}px`;
+  pin.style.left = `${x - 8}px`;
+  pin.style.top = `${y - 8}px`;
   pin.title = `${label}`;
   grid.appendChild(pin);
 }
@@ -62,8 +63,8 @@ function placePin(section, corner, label, color = "red") {
   const [x, y] = getCornerOffset(corner);
   const pin = document.createElement("div");
   pin.className = `pin ${color}`;
-  pin.style.left = `${x - 5}px`;
-  pin.style.top = `${y - 5}px`;
+  pin.style.left = `${x - 8}px`;
+  pin.style.top = `${y - 8}px`;
   pin.title = `${label}: Sec ${section} ${corner}`;
   cell.appendChild(pin);
 }
@@ -77,25 +78,36 @@ function drawOverlay(lines) {
     line.setAttribute("y1", y1);
     line.setAttribute("x2", x2);
     line.setAttribute("y2", y2);
-    line.setAttribute("stroke", i === 2 ? "green" : "gray");
-    line.setAttribute("stroke-width", 2);
+    line.setAttribute("stroke", i === 2 ? "green" : "red");
+    line.setAttribute("stroke-width", 2.5);
     svg.appendChild(line);
   });
 }
 
+let A, B, C, D;
+
 function updateAnchors() {
   buildGrid();
 
-  const A = getGridPosition(document.getElementById("sectionA").value, document.getElementById("cornerA").value);
-  const B = getGridPosition(document.getElementById("sectionB").value, document.getElementById("cornerB").value);
-  const C = getGridPosition(document.getElementById("sectionC").value, document.getElementById("cornerC").value);
-  const D = getGridPosition(document.getElementById("sectionD").value, document.getElementById("cornerD").value);
+  A = getGridPosition(document.getElementById("sectionA").value, document.getElementById("cornerA").value);
+  B = getGridPosition(document.getElementById("sectionB").value, document.getElementById("cornerB").value);
+  C = getGridPosition(document.getElementById("sectionC").value, document.getElementById("cornerC").value);
+  D = getGridPosition(document.getElementById("sectionD").value, document.getElementById("cornerD").value);
 
   if (A) placePin(document.getElementById("sectionA").value, document.getElementById("cornerA").value, "A", "red");
   if (B) placePin(document.getElementById("sectionB").value, document.getElementById("cornerB").value, "B", "red");
   if (C) placePin(document.getElementById("sectionC").value, document.getElementById("cornerC").value, "C", "red");
   if (D) placePin(document.getElementById("sectionD").value, document.getElementById("cornerD").value, "D", "red");
 
+  if (A && B && C && D) {
+    drawOverlay([
+      [A.x, A.y, B.x, B.y],
+      [C.x, C.y, D.x, D.y]
+    ]);
+  }
+}
+
+function calculateRestoredCorner() {
   const northingA = parseFloat(document.getElementById("northingA").value);
   const northingB = parseFloat(document.getElementById("northingB").value);
   const recordAB = parseFloat(document.getElementById("recordAB").value);
@@ -110,7 +122,10 @@ function updateAnchors() {
     !A || !B || !C || !D ||
     isNaN(northingA) || isNaN(northingB) || isNaN(recordAB) || isNaN(measuredAB) ||
     isNaN(eastingC) || isNaN(eastingD) || isNaN(recordCD) || isNaN(measuredCD)
-  ) return;
+  ) {
+    mathOutput.textContent = "Please fill in all inputs before calculating.";
+    return;
+  }
 
   const nsRatio = measuredAB / recordAB;
   const ewRatio = measuredCD / recordCD;
@@ -128,6 +143,21 @@ function updateAnchors() {
     [C.x, C.y, D.x, D.y],
     [gridX, gridY, gridX, gridY]
   ]);
+
+  mathOutput.textContent = `
+Math Breakdown:
+
+1. NS Ratio = Measured AB / Record AB = ${measuredAB} / ${recordAB} = ${nsRatio.toFixed(4)}
+2. EW Ratio = Measured CD / Record CD = ${measuredCD} / ${recordCD} = ${ewRatio.toFixed(4)}
+
+3. Restored Northing = A_northing + NS Ratio × (B_northing - A_northing)
+                     = ${northingA} + ${nsRatio.toFixed(4)} × (${northingB} - ${northingA})
+                     = ${restoredNorthing.toFixed(2)}
+
+4. Restored Easting = C_easting + EW Ratio × (D_easting - C_easting)
+                    = ${eastingC} + ${ewRatio.toFixed(4)} × (${eastingD} - ${eastingC})
+                    = ${restoredEasting.toFixed(2)}
+`;
 }
 
 function resetGrid() {
@@ -141,6 +171,7 @@ function resetGrid() {
   ];
   ids.forEach(id => document.getElementById(id).value = "");
   document.getElementById("overlay").innerHTML = "";
+  mathOutput.textContent = "Fill in inputs and click \"Calculate Restored Corner\" to see the math.";
   buildGrid();
 }
 
