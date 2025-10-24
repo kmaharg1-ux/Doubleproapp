@@ -15,7 +15,7 @@
   </div>
 
   <div id="controls">
-    <h2>Define Anchor Points</h2>
+    <h2>Step 1: Define Known Points</h2>
 
     <label>A Section: <input id="sectionA" type="number" min="1" max="36" /></label>
     <label>A Corner:
@@ -31,7 +31,6 @@
         <option value="C">Center</option>
       </select>
     </label>
-    <label>A Northing: <input id="northingA" type="number" /></label>
 
     <label>B Section: <input id="sectionB" type="number" min="1" max="36" /></label>
     <label>B Corner:
@@ -47,10 +46,6 @@
         <option value="C">Center</option>
       </select>
     </label>
-    <label>B Northing: <input id="northingB" type="number" /></label>
-
-    <label>Record Distance A–B: <input id="recordAB" type="number" /></label>
-    <label>Measured Distance A–B: <input id="measuredAB" type="number" /></label>
 
     <label>C Section: <input id="sectionC" type="number" min="1" max="36" /></label>
     <label>C Corner:
@@ -66,7 +61,6 @@
         <option value="C">Center</option>
       </select>
     </label>
-    <label>C Easting: <input id="eastingC" type="number" /></label>
 
     <label>D Section: <input id="sectionD" type="number" min="1" max="36" /></label>
     <label>D Corner:
@@ -82,13 +76,28 @@
         <option value="C">Center</option>
       </select>
     </label>
-    <label>D Easting: <input id="eastingD" type="number" /></label>
 
+    <button onclick="updateAnchors()">Update Anchors</button>
+
+    <h2>Step 2: Restoration Inputs</h2>
+
+    <label>A Northing: <input id="northingA" type="number" /></label>
+    <label>B Northing: <input id="northingB" type="number" /></label>
+    <label>Record Distance A–B: <input id="recordAB" type="number" /></label>
+    <label>Measured Distance A–B: <input id="measuredAB" type="number" /></label>
+
+    <label>C Easting: <input id="eastingC" type="number" /></label>
+    <label>D Easting: <input id="eastingD" type="number" /></label>
     <label>Record Distance C–D: <input id="recordCD" type="number" /></label>
     <label>Measured Distance C–D: <input id="measuredCD" type="number" /></label>
 
-    <button onclick="updateAnchors()">Update Anchors</button>
+    <button onclick="calculateRestoredCorner()">Calculate Restored Corner</button>
     <button onclick="resetGrid()">Reset</button>
+  </div>
+
+  <div id="math">
+    <h2>Math Breakdown</h2>
+    <pre id="mathOutput">Fill in inputs and click "Calculate Restored Corner" to see the math.</pre>
   </div>
 
   <script src="script.js"></script>
