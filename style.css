@@ -35,10 +35,11 @@ h1 {
 
 .pin {
   position: absolute;
-  width: 10px;
-  height: 10px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   pointer-events: none;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
 }
 
 .pin.red {
@@ -94,6 +95,25 @@ button {
 
 button:hover {
   background: #3a8f5c;
+}
+
+#math {
+  max-width: 600px;
+  margin: 2em auto;
+  background: #fff;
+  padding: 1em;
+  border-radius: 6px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+#math h2 {
+  margin-top: 0;
+}
+
+#mathOutput {
+  white-space: pre-wrap;
+  font-family: monospace;
+  font-size: 0.95em;
 }
 
 @media (max-width: 700px) {
