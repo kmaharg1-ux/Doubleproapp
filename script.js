@@ -1,12 +1,13 @@
-
+// Generate correct serpentine grid (Section 1 in NE corner)
 const gridContainer = document.getElementById("grid");
 let selectedSection = null;
 
 for (let row = 0; row < 6; row++) {
   for (let col = 0; col < 6; col++) {
+    let base = 6 * row;
     let sectionNum = row % 2 === 0
-      ? 36 - row * 6 - col
-      : 36 - row * 6 - (5 - col);
+      ? 36 - base - (5 - col)  // even rows: right to left
+      : 36 - base - col;       // odd rows: left to right
 
     const cell = document.createElement("div");
     cell.textContent = sectionNum;
@@ -27,12 +28,11 @@ function updateSelectedInfo() {
     `Restoring ${corner} corner of Section ${selectedSection}`;
 }
 
-
+// Redraw canvas grid + points
 function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
   const canvas = document.getElementById("gridCanvas");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
 
   const spacing = canvas.width / 6;
   ctx.strokeStyle = "#ccc";
@@ -48,7 +48,6 @@ function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
     ctx.stroke();
   }
 
-
   function drawPoint(x, y, label) {
     ctx.fillStyle = "red";
     ctx.beginPath();
@@ -59,7 +58,6 @@ function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
     ctx.fillText(label, x + 6, y - 6);
   }
 
-  
   function normalize(n, min, max) {
     return ((n - min) / (max - min)) * canvas.width;
   }
@@ -79,7 +77,6 @@ function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
     drawPoint(normalize(restoredE, minE, maxE), canvas.height - normalize(restoredN, minN, maxN), "Restored");
   }
 }
-
 
 function calculate() {
   const aN = parseFloat(document.getElementById("aNorthing").value);
@@ -105,7 +102,6 @@ function calculate() {
   const feedback = [];
   const math = [];
 
-
   if (aN > bN && aN > restoredNorthing) {
     feedback.push("✅ A is north of B and the restored corner.");
   } else {
@@ -130,7 +126,6 @@ function calculate() {
     feedback.push("⚠️ C should be west of D and the restored corner.");
   }
 
-
   const nsValid = validSpans.some(span => Math.abs(nsSpan - span) <= buffer);
   const ewValid = validSpans.some(span => Math.abs(ewSpan - span) <= buffer);
 
@@ -141,7 +136,6 @@ function calculate() {
   feedback.push(ewValid
     ? `✅ EW span (${ewSpan} ft) is within ±${buffer} ft of a valid section multiple.`
     : `⚠️ EW span (${ewSpan} ft) is not near a valid section multiple.`);
-
 
   math.push(`NS Ratio = ${mAB} / ${rAB} = ${nsRatio.toFixed(4)}`);
   math.push(`EW Ratio = ${mCD} / ${rCD} = ${ewRatio.toFixed(4)}`);
@@ -156,4 +150,3 @@ function calculate() {
 }
 
 document.getElementById("cornerSelect").onchange = updateSelectedInfo;
-
