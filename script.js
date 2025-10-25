@@ -1,4 +1,4 @@
-// Correct PLSS serpentine grid layout using sectionMap
+// True PLSS serpentine grid layout
 const gridContainer = document.getElementById("grid");
 let selectedSection = null;
 
@@ -13,7 +13,7 @@ const sectionMap = [
 
 for (let row = 0; row < 6; row++) {
   for (let col = 0; col < 6; col++) {
-    let sectionNum = sectionMap[row][col];
+    const sectionNum = sectionMap[row][col];
     const cell = document.createElement("div");
     cell.textContent = sectionNum;
     cell.dataset.section = sectionNum;
