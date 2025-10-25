@@ -20,6 +20,7 @@ h1 {
   width: max-content;
   overflow-x: auto;
   background: #ddd;
+  cursor: crosshair;
 }
 
 .cell {
@@ -40,6 +41,7 @@ h1 {
   border-radius: 50%;
   pointer-events: none;
   box-shadow: 0 0 2px rgba(0,0,0,0.3);
+  z-index: 2;
 }
 
 .pin.red {
@@ -66,7 +68,6 @@ h1 {
   gap: 1em;
   max-width: 600px;
   margin: 0 auto;
-  padding-bottom: 2em;
 }
 
 label {
@@ -97,25 +98,41 @@ button:hover {
   background: #3a8f5c;
 }
 
-#math {
+/* Modular layout */
+details {
+  margin: 1em auto;
   max-width: 600px;
-  margin: 2em auto;
   background: #fff;
-  padding: 1em;
   border-radius: 6px;
   box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  padding: 1em;
 }
 
-#math h2 {
-  margin-top: 0;
+summary {
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 0.5em;
 }
 
+/* Math and coordinate display */
 #mathOutput {
   white-space: pre-wrap;
   font-family: monospace;
   font-size: 0.95em;
+  margin-top: 0.5em;
 }
 
+#restoredCoords {
+  font-size: 1.1em;
+  color: #2c6e49;
+  background: #eef6f2;
+  padding: 0.5em;
+  border-radius: 4px;
+  margin-top: 1em;
+}
+
+/* Responsive tweaks */
 @media (max-width: 700px) {
   #grid {
     transform: scale(0.9);
@@ -132,5 +149,9 @@ button:hover {
 
   button {
     font-size: 0.95em;
+  }
+
+  summary {
+    font-size: 1em;
   }
 }
