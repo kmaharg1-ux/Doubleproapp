@@ -2,107 +2,115 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PLSS Restoration Grid</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PLSS Restoration Tool</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; max-width: 800px; margin: auto; }
+    input { width: 100px; margin: 0.25rem; }
+    .section { margin-bottom: 2rem; }
+    .feedback { margin-top: 1rem; padding: 0.5rem; border-radius: 5px; }
+    .valid { background: #e0ffe0; border: 1px solid #0a0; }
+    .warn { background: #fff0e0; border: 1px solid #fa0; }
+    .error { background: #ffe0e0; border: 1px solid #a00; }
+    .math-preview { font-family: monospace; background: #f8f8f8; padding: 1rem; border-radius: 5px; }
+  </style>
 </head>
 <body>
-  <h1>PLSS Restoration Grid</h1>
 
-  <div style="position: relative; width: max-content; margin: 0 auto;">
-    <div id="grid" onclick="handleGridClick(event)"></div>
-    <svg id="overlay"></svg>
+  <h1>PLSS Restoration Tool</h1>
+
+  <div class="section">
+    <h2>🧭 Orientation Guide</h2>
+    <ul>
+      <li>A = north of the corner</li>
+      <li>B = south of the corner</li>
+      <li>C = west of the corner</li>
+      <li>D = east of the corner</li>
+    </ul>
   </div>
 
-  <details open>
-    <summary><strong>Step 1: Define Known Points</strong></summary>
-    <div id="controls">
-      <label>A Section: <input id="sectionA" type="number" min="1" max="36" /></label>
-      <label>A Corner:
-        <select id="cornerA">
-          <option value="NW">NW</option>
-          <option value="NE">NE</option>
-          <option value="SW">SW</option>
-          <option value="SE">SE</option>
-          <option value="N">N (Quarter)</option>
-          <option value="S">S (Quarter)</option>
-          <option value="E">E (Quarter)</option>
-          <option value="W">W (Quarter)</option>
-        </select>
-      </label>
+  <div class="section">
+    <h2>📍 Input Coordinates</h2>
+    <label>A Northing: <input type="number" id="aNorthing" /></label>
+    <label>B Northing: <input type="number" id="bNorthing" /></label><br/>
+    <label>C Easting: <input type="number" id="cEasting" /></label>
+    <label>D Easting: <input type="number" id="dEasting" /></label>
+  </div>
 
-      <label>B Section: <input id="sectionB" type="number" min="1" max="36" /></label>
-      <label>B Corner:
-        <select id="cornerB">
-          <option value="NW">NW</option>
-          <option value="NE">NE</option>
-          <option value="SW">SW</option>
-          <option value="SE">SE</option>
-          <option value="N">N (Quarter)</option>
-          <option value="S">S (Quarter)</option>
-          <option value="E">E (Quarter)</option>
-          <option value="W">W (Quarter)</option>
-        </select>
-      </label>
+  <div class="section">
+    <h2>📏 Distances</h2>
+    <label>Record AB: <input type="number" id="recordAB" /></label>
+    <label>Measured AB: <input type="number" id="measuredAB" /></label><br/>
+    <label>Record CD: <input type="number" id="recordCD" /></label>
+    <label>Measured CD: <input type="number" id="measuredCD" /></label>
+  </div>
 
-      <label>C Section: <input id="sectionC" type="number" min="1" max="36" /></label>
-      <label>C Corner:
-        <select id="cornerC">
-          <option value="NW">NW</option>
-          <option value="NE">NE</option>
-          <option value="SW">SW</option>
-          <option value="SE">SE</option>
-          <option value="N">N (Quarter)</option>
-          <option value="S">S (Quarter)</option>
-          <option value="E">E (Quarter)</option>
-          <option value="W">W (Quarter)</option>
-        </select>
-      </label>
+  <div class="section">
+    <button onclick="calculate()">🔍 Calculate Restored Corner</button>
+    <div id="feedback" class="feedback"></div>
+  </div>
 
-      <label>D Section: <input id="sectionD" type="number" min="1" max="36" /></label>
-      <label>D Corner:
-        <select id="cornerD">
-          <option value="NW">NW</option>
-          <option value="NE">NE</option>
-          <option value="SW">SW</option>
-          <option value="SE">SE</option>
-          <option value="N">N (Quarter)</option>
-          <option value="S">S (Quarter)</option>
-          <option value="E">E (Quarter)</option>
-          <option value="W">W (Quarter)</option>
-        </select>
-      </label>
+  <div class="section">
+    <h2>📐 Live Math Preview</h2>
+    <div id="mathPreview" class="math-preview"></div>
+  </div>
 
-      <button onclick="updateAnchors()">Update Anchors</button>
-    </div>
-  </details>
+  <script>
+    function calculate() {
+      const aN = parseFloat(document.getElementById("aNorthing").value);
+      const bN = parseFloat(document.getElementById("bNorthing").value);
+      const cE = parseFloat(document.getElementById("cEasting").value);
+      const dE = parseFloat(document.getElementById("dEasting").value);
+      const rAB = parseFloat(document.getElementById("recordAB").value);
+      const mAB = parseFloat(document.getElementById("measuredAB").value);
+      const rCD = parseFloat(document.getElementById("recordCD").value);
+      const mCD = parseFloat(document.getElementById("measuredCD").value);
 
-  <details open>
-    <summary><strong>Step 2: Restoration Inputs</strong></summary>
-    <div id="controls">
-      <label>A Northing: <input id="northingA" type="number" oninput="previewMath()" /></label>
-      <label>B Northing: <input id="northingB" type="number" oninput="previewMath()" /></label>
-      <label>Record Distance A–B: <input id="recordAB" type="number" oninput="previewMath()" /></label>
-      <label>Measured Distance A–B: <input id="measuredAB" type="number" oninput="previewMath()" /></label>
+      const nsRatio = mAB / rAB;
+      const ewRatio = mCD / rCD;
 
-      <label>C Easting: <input id="eastingC" type="number" oninput="previewMath()" /></label>
-      <label>D Easting: <input id="eastingD" type="number" oninput="previewMath()" /></label>
-      <label>Record Distance C–D: <input id="recordCD" type="number" oninput="previewMath()" /></label>
-      <label>Measured Distance C–D: <input id="measuredCD" type="number" oninput="previewMath()" /></label>
+      const restoredNorthing = bN + nsRatio * (rAB);
+      const restoredEasting = cE + ewRatio * (rCD);
 
-      <button onclick="calculateRestoredCorner()">Calculate Restored Corner</button>
-      <button onclick="resetGrid()">Reset</button>
-    </div>
-  </details>
+      const nsSpan = Math.abs(aN - bN);
+      const ewSpan = Math.abs(dE - cE);
+      const validSpans = [2640, 5280, 7920, 10560, 13200, 15840, 18480, 21120, 23760, 26400];
+      const buffer = 300;
 
-  <details open>
-    <summary><strong>Step 3: Math Breakdown</strong></summary>
-    <div id="math">
-      <pre id="mathOutput">Fill in inputs to preview restoration math...</pre>
-      <div id="restoredCoords" style="font-weight: bold; margin-top: 1em;"></div>
-    </div>
-  </details>
+      const feedback = [];
+      const math = [];
 
-  <script src="script.js"></script>
+      // Direction checks
+      if (aN <= bN || aN <= restoredNorthing) feedback.push("⚠️ A should be north of B and the restored corner.");
+      else feedback.push("✅ A is north of B and the restored corner.");
+
+      if (bN >= restoredNorthing || bN >= aN) feedback.push("⚠️ B should be south of A and the restored corner.");
+      else feedback.push("✅ B is south of A and the restored corner.");
+
+      if (dE <= cE || dE <= restoredEasting) feedback.push("⚠️ D should be east of C and the restored corner.");
+      else feedback.push("✅ D is east of C and the restored corner.");
+
+      if (cE >= restoredEasting || cE >= dE) feedback.push("⚠️ C should be west of D and the restored corner.");
+      else feedback.push("✅ C is west of D and the restored corner.");
+
+      // Span checks
+      const nsValid = validSpans.some(span => Math.abs(nsSpan - span) <= buffer);
+      const ewValid = validSpans.some(span => Math.abs(ewSpan - span) <= buffer);
+
+      feedback.push(nsValid ? `✅ NS span (${nsSpan} ft) is valid.` : `⚠️ NS span (${nsSpan} ft) is not near a valid section multiple.`);
+      feedback.push(ewValid ? `✅ EW span (${ewSpan} ft) is valid.` : `⚠️ EW span (${ewSpan} ft) is not near a valid section multiple.`);
+
+      // Math preview
+      math.push(`NS Ratio = ${mAB} / ${rAB} = ${nsRatio.toFixed(4)}`);
+      math.push(`EW Ratio = ${mCD} / ${rCD} = ${ewRatio.toFixed(4)}`);
+      math.push(`Restored Northing = ${bN} + ${nsRatio.toFixed(4)} × ${rAB} = ${restoredNorthing.toFixed(2)}`);
+      math.push(`Restored Easting = ${cE} + ${ewRatio.toFixed(4)} × ${rCD} = ${restoredEasting.toFixed(2)}`);
+      math.push(`📍 Final Restored Corner: (${restoredNorthing.toFixed(2)}, ${restoredEasting.toFixed(2)})`);
+
+      document.getElementById("feedback").innerHTML = feedback.map(f => `<div>${f}</div>`).join("");
+      document.getElementById("mathPreview").innerHTML = math.join("<br/>");
+    }
+  </script>
+
 </body>
 </html>
