@@ -1,5 +1,87 @@
+// Generate serpentine grid
+const gridContainer = document.getElementById("grid");
+let selectedSection = null;
+
+for (let row = 0; row < 6; row++) {
+  for (let col = 0; col < 6; col++) {
+    let sectionNum = row % 2 === 0
+      ? 36 - row * 6 - col
+      : 36 - row * 6 - (5 - col);
+
+    const cell = document.createElement("div");
+    cell.textContent = sectionNum;
+    cell.dataset.section = sectionNum;
+    cell.onclick = () => {
+      selectedSection = sectionNum;
+      document.querySelectorAll("#grid div").forEach(d => d.classList.remove("selected"));
+      cell.classList.add("selected");
+      updateSelectedInfo();
+    };
+    gridContainer.appendChild(cell);
+  }
+}
+
+function updateSelectedInfo() {
+  const corner = document.getElementById("cornerSelect").value;
+  document.getElementById("selectedInfo").textContent =
+    `Restoring ${corner} corner of Section ${selectedSection}`;
+}
+
+// Redraw canvas grid + points
+function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
+  const canvas = document.getElementById("gridCanvas");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw grid
+  const spacing = canvas.width / 6;
+  ctx.strokeStyle = "#ccc";
+  for (let i = 0; i <= 6; i++) {
+    ctx.beginPath();
+    ctx.moveTo(i * spacing, 0);
+    ctx.lineTo(i * spacing, canvas.height);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, i * spacing);
+    ctx.lineTo(canvas.width, i * spacing);
+    ctx.stroke();
+  }
+
+  // Helper to draw red point
+  function drawPoint(x, y, label) {
+    ctx.fillStyle = "red";
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.fillStyle = "#333";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(label, x + 6, y - 6);
+  }
+
+  // Normalize coordinates to canvas
+  function normalize(n, min, max) {
+    return ((n - min) / (max - min)) * canvas.width;
+  }
+
+  const allN = [aN, bN, restoredN].filter(n => !isNaN(n));
+  const allE = [cE, dE, restoredE].filter(e => !isNaN(e));
+  const minN = Math.min(...allN);
+  const maxN = Math.max(...allN);
+  const minE = Math.min(...allE);
+  const maxE = Math.max(...allE);
+
+  if (allN.length && allE.length) {
+    drawPoint(normalize(cE, minE, maxE), canvas.height - normalize(aN, minN, maxN), "A");
+    drawPoint(normalize(cE, minE, maxE), canvas.height - normalize(bN, minN, maxN), "B");
+    drawPoint(normalize(cE, minE, maxE), canvas.height - normalize(bN, minN, maxN), "C");
+    drawPoint(normalize(dE, minE, maxE), canvas.height - normalize(bN, minN, maxN), "D");
+    drawPoint(normalize(restoredE, minE, maxE), canvas.height - normalize(restoredN, minN, maxN), "Restored");
+  }
+}
+
+// Main logic
 function calculate() {
-  // Grab inputs
   const aN = parseFloat(document.getElementById("aNorthing").value);
   const bN = parseFloat(document.getElementById("bNorthing").value);
   const cE = parseFloat(document.getElementById("cEasting").value);
@@ -9,15 +91,12 @@ function calculate() {
   const rCD = parseFloat(document.getElementById("recordCD").value);
   const mCD = parseFloat(document.getElementById("measuredCD").value);
 
-  // Calculate ratios
   const nsRatio = mAB / rAB;
   const ewRatio = mCD / rCD;
 
-  // Calculate restored coordinates
   const restoredNorthing = bN + nsRatio * rAB;
   const restoredEasting = cE + ewRatio * rCD;
 
-  // Section span validation
   const nsSpan = Math.abs(aN - bN);
   const ewSpan = Math.abs(dE - cE);
   const buffer = 300;
@@ -70,7 +149,12 @@ function calculate() {
   math.push(`Restored Easting = ${cE} + ${ewRatio.toFixed(4)} × ${rCD} = ${restoredEasting.toFixed(2)}`);
   math.push(`📍 Final Restored Corner: (${restoredNorthing.toFixed(2)}, ${restoredEasting.toFixed(2)})`);
 
-  // Output
   document.getElementById("feedback").innerHTML = feedback.map(f => `<div>${f}</div>`).join("");
   document.getElementById("mathPreview").innerHTML = math.join("<br/>");
+
+  drawGridAndPoints(aN, bN, cE, dE, restoredNorthing, restoredEasting);
 }
+
+// Update corner info on change
+document.getElementById("cornerSelect").onchange = updateSelectedInfo;
+
