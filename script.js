@@ -10,7 +10,6 @@ const sectionMap = [
   [31, 32, 33, 34, 35, 36]
 ];
 
-// Reverse rows so Section 1 appears in top-right
 for (let row = 0; row < 6; row++) {
   for (let col = 0; col < 6; col++) {
     const sectionNum = sectionMap[5 - row][col];
