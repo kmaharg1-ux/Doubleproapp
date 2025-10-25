@@ -2,66 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PLSS Restoration Tool</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
   <h1>PLSS Restoration Tool</h1>
 
-  <div class="section">
-    <h2>🗺️ Select Section and Corner</h2>
-    <div id="grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;">
-      <!-- Grid cells will be injected by JS -->
-    </div>
-    <div style="margin-top: 1rem;">
-      <label>Corner:
-        <select id="cornerSelect">
-          <option value="NW">NW</option>
-          <option value="NE">NE</option>
-          <option value="SW">SW</option>
-          <option value="SE">SE</option>
-          <option value="NW¼">NW¼</option>
-          <option value="NE¼">NE¼</option>
-          <option value="SW¼">SW¼</option>
-          <option value="SE¼">SE¼</option>
-        </select>
-      </label>
-    </div>
-    <div id="selectedInfo" style="margin-top: 0.5rem; font-weight: bold;"></div>
-  </div>
+  <div id="grid"></div>
 
-  <div class="section">
-    <h2>📍 Input Coordinates</h2>
-    <label>A Northing: <input type="number" id="aNorthing" /></label>
-    <label>B Northing: <input type="number" id="bNorthing" /></label><br/>
-    <label>C Easting: <input type="number" id="cEasting" /></label>
-    <label>D Easting: <input type="number" id="dEasting" /></label>
-  </div>
+  <label for="cornerSelect">Corner:</label>
+  <select id="cornerSelect">
+    <option value="NW">NW</option>
+    <option value="NE">NE</option>
+    <option value="SW">SW</option>
+    <option value="SE">SE</option>
+    <option value="Quarter">Quarter</option>
+  </select>
 
-  <div class="section">
-    <h2>📏 Distances</h2>
-    <label>Record AB: <input type="number" id="recordAB" /></label>
-    <label>Measured AB: <input type="number" id="measuredAB" /></label><br/>
-    <label>Record CD: <input type="number" id="recordCD" /></label>
-    <label>Measured CD: <input type="number" id="measuredCD" /></label>
-  </div>
+  <div id="selectedInfo"></div>
 
-  <div class="section">
-    <button onclick="calculate()">🔍 Calculate Restored Corner</button>
-    <div id="feedback" class="feedback"></div>
-  </div>
+  <h2>Input Coordinates</h2>
+  <label>A Northing: <input id="aNorthing" type="number" /></label><br />
+  <label>B Northing: <input id="bNorthing" type="number" /></label><br />
+  <label>C Easting: <input id="cEasting" type="number" /></label><br />
+  <label>D Easting: <input id="dEasting" type="number" /></label><br />
 
-  <div class="section">
-    <h2>📐 Live Math Preview</h2>
-    <div id="mathPreview" class="math-preview"></div>
-  </div>
+  <h2>Record vs Measured</h2>
+  <label>Record AB: <input id="recordAB" type="number" /></label><br />
+  <label>Measured AB: <input id="measuredAB" type="number" /></label><br />
+  <label>Record CD: <input id="recordCD" type="number" /></label><br />
+  <label>Measured CD: <input id="measuredCD" type="number" /></label><br />
 
-  <div class="section">
-    <h2>🧭 Visual Grid</h2>
-    <canvas id="gridCanvas" width="600" height="600" style="border:1px solid #ccc;"></canvas>
-  </div>
+  <button onclick="calculate()">Restore Corner</button>
+
+  <h2>Feedback</h2>
+  <div id="feedback"></div>
+
+  <h2>Math Preview</h2>
+  <div id="mathPreview"></div>
+
+  <h2>Grid Canvas</h2>
+  <canvas id="gridCanvas" width="400" height="400"></canvas>
 
   <script src="script.js"></script>
 </body>
