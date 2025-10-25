@@ -40,8 +40,7 @@ function getGridPosition(section, corner) {
     case "S":  return { x: x + 50, y: y + 100 };
     case "E":  return { x: x + 100, y: y + 50 };
     case "W":  return { x, y: y + 50 };
-    case "C":  return { x: x + 50, y: y + 50 };
-    default:   return { x: x + 50, y: y + 50 };
+    default:   return null;
   }
 }
 
@@ -185,7 +184,7 @@ function handleGridClick(event) {
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
 
-  let corner = "C";
+  let corner = null;
   if (x < 33 && y < 33) corner = "NW";
   else if (x > 66 && y < 33) corner = "NE";
   else if (x < 33 && y > 66) corner = "SW";
@@ -194,18 +193,7 @@ function handleGridClick(event) {
   else if (y > 66) corner = "S";
   else if (x < 33) corner = "W";
   else if (x > 66) corner = "E";
-
-  const cornerMap = {
-    NW: { x: col * 100, y: row * 100 },
-    NE: { x: (col + 1) * 100, y: row * 100 },
-    SW: { x: col * 100, y: (row + 1) * 100 },
-    SE: { x: (col + 1) * 100, y: (row + 1) * 100 },
-    N:  { x: col * 100 + 50, y: row * 100 },
-    S:  { x: col * 100 + 50, y: (row + 1) * 100 },
-    E:  { x: (col + 1) * 100, y: row * 100 + 50 },
-    W:  { x: col * 100, y: row * 100 + 50 },
-    C:  { x: col * 100 + 50, y: row * 100 + 50 }
-  };
+  else return; // center tap — ignore
 
   const slots = [
     { section: "sectionA", corner: "cornerA" },
