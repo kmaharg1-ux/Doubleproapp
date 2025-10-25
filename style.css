@@ -1,39 +1,67 @@
 body {
   font-family: system-ui, sans-serif;
-  padding: 20px;
-  max-width: 700px;
-  margin: auto;
-  background-color: #fdfdfd;
-  color: #333;
+  margin: 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  color: #222;
 }
 
-h1, h2 {
-  margin-top: 1.5em;
-  font-weight: 600;
-  color: #2c3e50;
+h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+  margin-bottom: 1rem;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#grid div {
+  background: #e0e0e0;
+  padding: 0.75rem;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#grid div.selected {
+  background: #007bff;
+  color: white;
+  border: 2px solid #0056b3;
+}
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 label {
-  display: block;
-  margin: 8px 0;
-  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
 }
 
-input[type="number"],
-select {
-  padding: 6px 10px;
-  font-size: 14px;
-  margin-top: 4px;
-  width: 100%;
-  max-width: 200px;
-  box-sizing: border-box;
+input, select {
+  padding: 0.4rem;
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  flex: 1;
 }
 
 button {
-  margin-top: 12px;
-  padding: 10px 16px;
-  font-size: 14px;
-  background-color: #007bff;
+  padding: 0.6rem;
+  font-size: 1rem;
+  background: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -41,75 +69,30 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
-}
-
-#grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-flow: row;
-}
-
-
-#grid div {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: center;
-  background-color: #f9f9f9;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#grid div:hover {
-  background-color: #e0f7fa;
-}
-
-#grid div.selected {
-  background-color: #ffeeba;
-  border-color: #f0ad4e;
+  background: #0056b3;
 }
 
 #feedback {
-  margin-top: 10px;
-  font-size: 14px;
-}
-
-#feedback div {
-  margin-bottom: 6px;
+  margin-top: 1rem;
+  font-weight: bold;
+  color: darkred;
+  white-space: pre-wrap;
 }
 
 #mathPreview {
-  margin-top: 10px;
-  font-family: monospace;
-  font-size: 13px;
-  background-color: #f4f4f4;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-canvas {
-  display: block;
-  margin: 20px auto;
+  margin-top: 1rem;
+  background: #fff;
+  padding: 1rem;
   border: 1px solid #ccc;
-  background-color: #fff;
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  white-space: pre-wrap;
 }
 
-@media (max-width: 600px) {
-  body {
-    padding: 10px;
-  }
-
-  #grid {
-    max-width: 100%;
-  }
-
-  input[type="number"],
-  select {
-    max-width: 100%;
-  }
-
-  button {
-    width: 100%;
-  }
+#selectedInfo {
+  font-weight: bold;
+  margin-top: 0.5rem;
+  text-align: center;
+  color: #333;
 }
