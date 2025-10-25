@@ -1,7 +1,8 @@
 const gridContainer = document.getElementById("grid");
 let selectedSection = null;
 
-const sectionMap = [
+// Hard-coded PLSS layout: top-down, serpentine, Section 1 in NE corner
+const hardCodedGrid = [
   [6, 5, 4, 3, 2, 1],
   [7, 8, 9, 10, 11, 12],
   [18, 17, 16, 15, 14, 13],
@@ -10,14 +11,9 @@ const sectionMap = [
   [31, 32, 33, 34, 35, 36]
 ];
 
-// Reverse both rows and columns to match PLSS layout (Section 1 in NE corner)
-for (let row = 5; row >= 0; row--) {
-  const serpentineRow = sectionMap[row];
-  const isEvenRow = (5 - row) % 2 === 0;
-  const orderedRow = isEvenRow ? [...serpentineRow].reverse() : serpentineRow;
-
+for (let row = 0; row < 6; row++) {
   for (let col = 0; col < 6; col++) {
-    const sectionNum = orderedRow[col];
+    const sectionNum = hardCodedGrid[row][col];
     const cell = document.createElement("div");
     cell.textContent = sectionNum;
     cell.dataset.section = sectionNum;
@@ -30,7 +26,6 @@ for (let row = 5; row >= 0; row--) {
     gridContainer.appendChild(cell);
   }
 }
-
 
 function updateSelectedInfo() {
   const corner = document.getElementById("cornerSelect").value;
