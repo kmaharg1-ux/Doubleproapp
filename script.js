@@ -10,9 +10,10 @@ const sectionMap = [
   [31, 32, 33, 34, 35, 36]
 ];
 
+// Reverse both rows and columns to match PLSS layout (Section 1 in NE corner)
 for (let row = 0; row < 6; row++) {
   for (let col = 0; col < 6; col++) {
-    const sectionNum = sectionMap[5 - row][col];
+    const sectionNum = sectionMap[5 - row][5 - col];
     const cell = document.createElement("div");
     cell.textContent = sectionNum;
     cell.dataset.section = sectionNum;
