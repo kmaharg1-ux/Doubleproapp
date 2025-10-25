@@ -1,11 +1,11 @@
-/* Reset and base styles */
+/* Base styles */
 body {
   margin: 0;
   padding: 2rem;
   font-family: 'Segoe UI', Roboto, sans-serif;
   background: linear-gradient(to bottom right, #f4f7fa, #e9eff5);
   color: #333;
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
 }
 
@@ -34,7 +34,7 @@ label {
   font-weight: 500;
 }
 
-input {
+input, select {
   padding: 0.4rem 0.6rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -43,7 +43,7 @@ input {
   transition: border-color 0.2s ease;
 }
 
-input:focus {
+input:focus, select:focus {
   border-color: #3498db;
   outline: none;
 }
@@ -103,4 +103,40 @@ ul {
 
 ul li {
   margin-bottom: 0.4rem;
+}
+
+/* Grid styles */
+#grid {
+  margin-top: 1rem;
+}
+
+#grid div {
+  background: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  text-align: center;
+  padding: 0.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+#grid div:hover {
+  background: #d0e6f7;
+}
+
+#grid div.selected {
+  background: #3498db;
+  color: white;
+}
+
+/* Canvas */
+#gridCanvas {
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  border: 1px solid #ccc;
+  background: #fff;
+  display: block;
+  margin-top: 1rem;
 }
