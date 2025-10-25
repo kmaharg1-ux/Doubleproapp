@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PLSS Restoration Tool</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -11,39 +11,37 @@
 
   <div id="grid"></div>
 
-  <label for="cornerSelect">Corner:</label>
-  <select id="cornerSelect">
-    <option value="NW">NW</option>
-    <option value="NE">NE</option>
-    <option value="SW">SW</option>
-    <option value="SE">SE</option>
-    <option value="Quarter">Quarter</option>
-  </select>
+  <div id="controls">
+    <label for="cornerType">Corner Type:</label>
+    <select id="cornerType">
+      <option value="Quarter">Quarter Corner</option>
+      <option value="Section">Section Corner</option>
+    </select>
 
-  <div id="selectedInfo"></div>
+    <label for="cornerSelect">Direction:</label>
+    <select id="cornerSelect">
+      <!-- Options will be injected dynamically -->
+    </select>
 
-  <h2>Input Coordinates</h2>
-  <label>A Northing: <input id="aNorthing" type="number" /></label><br />
-  <label>B Northing: <input id="bNorthing" type="number" /></label><br />
-  <label>C Easting: <input id="cEasting" type="number" /></label><br />
-  <label>D Easting: <input id="dEasting" type="number" /></label><br />
+    <div id="selectedInfo"></div>
 
-  <h2>Record vs Measured</h2>
-  <label>Record AB: <input id="recordAB" type="number" /></label><br />
-  <label>Measured AB: <input id="measuredAB" type="number" /></label><br />
-  <label>Record CD: <input id="recordCD" type="number" /></label><br />
-  <label>Measured CD: <input id="measuredCD" type="number" /></label><br />
+    <h3>Input Coordinates</h3>
+    <label>A Northing: <input type="number" id="aNorthing" /></label>
+    <label>B Northing: <input type="number" id="bNorthing" /></label>
+    <label>C Easting: <input type="number" id="cEasting" /></label>
+    <label>D Easting: <input type="number" id="dEasting" /></label>
 
-  <button onclick="calculate()">Restore Corner</button>
+    <h3>Record & Measured Distances</h3>
+    <label>Record AB: <input type="number" id="recordAB" /></label>
+    <label>Measured AB: <input type="number" id="measuredAB" /></label>
+    <label>Record CD: <input type="number" id="recordCD" /></label>
+    <label>Measured CD: <input type="number" id="measuredCD" /></label>
 
-  <h2>Feedback</h2>
+    <button onclick="calculate()">Calculate</button>
+  </div>
+
   <div id="feedback"></div>
-
-  <h2>Math Preview</h2>
   <div id="mathPreview"></div>
-
-  <h2>Grid Canvas</h2>
-  <canvas id="gridCanvas" width="400" height="400"></canvas>
 
   <script src="script.js"></script>
 </body>
