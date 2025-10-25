@@ -173,11 +173,14 @@ function resetGrid() {
   restoredCoords.textContent = "";
   buildGrid();
 }
+
 function handleGridClick(event) {
   const cell = event.target.closest(".cell");
   if (!cell) return;
 
   const section = cell.dataset.section;
+  const row = parseInt(cell.dataset.row);
+  const col = parseInt(cell.dataset.col);
   const rect = cell.getBoundingClientRect();
   const x = event.clientX - rect.left;
   const y = event.clientY - rect.top;
@@ -191,6 +194,18 @@ function handleGridClick(event) {
   else if (y > 66) corner = "S";
   else if (x < 33) corner = "W";
   else if (x > 66) corner = "E";
+
+  const cornerMap = {
+    NW: { x: col * 100, y: row * 100 },
+    NE: { x: (col + 1) * 100, y: row * 100 },
+    SW: { x: col * 100, y: (row + 1) * 100 },
+    SE: { x: (col + 1) * 100, y: (row + 1) * 100 },
+    N:  { x: col * 100 + 50, y: row * 100 },
+    S:  { x: col * 100 + 50, y: (row + 1) * 100 },
+    E:  { x: (col + 1) * 100, y: row * 100 + 50 },
+    W:  { x: col * 100, y: row * 100 + 50 },
+    C:  { x: col * 100 + 50, y: row * 100 + 50 }
+  };
 
   const slots = [
     { section: "sectionA", corner: "cornerA" },
