@@ -4,29 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PLSS Restoration Tool</title>
-  <style>
-    body { font-family: sans-serif; padding: 2rem; max-width: 800px; margin: auto; }
-    input { width: 100px; margin: 0.25rem; }
-    .section { margin-bottom: 2rem; }
-    .feedback { margin-top: 1rem; padding: 0.5rem; border-radius: 5px; }
-    .valid { background: #e0ffe0; border: 1px solid #0a0; }
-    .warn { background: #fff0e0; border: 1px solid #fa0; }
-    .error { background: #ffe0e0; border: 1px solid #a00; }
-    .math-preview { font-family: monospace; background: #f8f8f8; padding: 1rem; border-radius: 5px; }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <h1>PLSS Restoration Tool</h1>
 
   <div class="section">
-    <h2>🧭 Orientation Guide</h2>
-    <ul>
-      <li>A = north of the corner</li>
-      <li>B = south of the corner</li>
-      <li>C = west of the corner</li>
-      <li>D = east of the corner</li>
-    </ul>
+    <h2>🗺️ Select Section and Corner</h2>
+    <div id="grid" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;">
+      <!-- Grid cells will be injected by JS -->
+    </div>
+    <div style="margin-top: 1rem;">
+      <label>Corner:
+        <select id="cornerSelect">
+          <option value="NW">NW</option>
+          <option value="NE">NE</option>
+          <option value="SW">SW</option>
+          <option value="SE">SE</option>
+          <option value="NW¼">NW¼</option>
+          <option value="NE¼">NE¼</option>
+          <option value="SW¼">SW¼</option>
+          <option value="SE¼">SE¼</option>
+        </select>
+      </label>
+    </div>
+    <div id="selectedInfo" style="margin-top: 0.5rem; font-weight: bold;"></div>
   </div>
 
   <div class="section">
@@ -55,62 +58,11 @@
     <div id="mathPreview" class="math-preview"></div>
   </div>
 
-  <script>
-    function calculate() {
-      const aN = parseFloat(document.getElementById("aNorthing").value);
-      const bN = parseFloat(document.getElementById("bNorthing").value);
-      const cE = parseFloat(document.getElementById("cEasting").value);
-      const dE = parseFloat(document.getElementById("dEasting").value);
-      const rAB = parseFloat(document.getElementById("recordAB").value);
-      const mAB = parseFloat(document.getElementById("measuredAB").value);
-      const rCD = parseFloat(document.getElementById("recordCD").value);
-      const mCD = parseFloat(document.getElementById("measuredCD").value);
+  <div class="section">
+    <h2>🧭 Visual Grid</h2>
+    <canvas id="gridCanvas" width="600" height="600" style="border:1px solid #ccc;"></canvas>
+  </div>
 
-      const nsRatio = mAB / rAB;
-      const ewRatio = mCD / rCD;
-
-      const restoredNorthing = bN + nsRatio * (rAB);
-      const restoredEasting = cE + ewRatio * (rCD);
-
-      const nsSpan = Math.abs(aN - bN);
-      const ewSpan = Math.abs(dE - cE);
-      const validSpans = [2640, 5280, 7920, 10560, 13200, 15840, 18480, 21120, 23760, 26400];
-      const buffer = 300;
-
-      const feedback = [];
-      const math = [];
-
-      // Direction checks
-      if (aN <= bN || aN <= restoredNorthing) feedback.push("⚠️ A should be north of B and the restored corner.");
-      else feedback.push("✅ A is north of B and the restored corner.");
-
-      if (bN >= restoredNorthing || bN >= aN) feedback.push("⚠️ B should be south of A and the restored corner.");
-      else feedback.push("✅ B is south of A and the restored corner.");
-
-      if (dE <= cE || dE <= restoredEasting) feedback.push("⚠️ D should be east of C and the restored corner.");
-      else feedback.push("✅ D is east of C and the restored corner.");
-
-      if (cE >= restoredEasting || cE >= dE) feedback.push("⚠️ C should be west of D and the restored corner.");
-      else feedback.push("✅ C is west of D and the restored corner.");
-
-      // Span checks
-      const nsValid = validSpans.some(span => Math.abs(nsSpan - span) <= buffer);
-      const ewValid = validSpans.some(span => Math.abs(ewSpan - span) <= buffer);
-
-      feedback.push(nsValid ? `✅ NS span (${nsSpan} ft) is valid.` : `⚠️ NS span (${nsSpan} ft) is not near a valid section multiple.`);
-      feedback.push(ewValid ? `✅ EW span (${ewSpan} ft) is valid.` : `⚠️ EW span (${ewSpan} ft) is not near a valid section multiple.`);
-
-      // Math preview
-      math.push(`NS Ratio = ${mAB} / ${rAB} = ${nsRatio.toFixed(4)}`);
-      math.push(`EW Ratio = ${mCD} / ${rCD} = ${ewRatio.toFixed(4)}`);
-      math.push(`Restored Northing = ${bN} + ${nsRatio.toFixed(4)} × ${rAB} = ${restoredNorthing.toFixed(2)}`);
-      math.push(`Restored Easting = ${cE} + ${ewRatio.toFixed(4)} × ${rCD} = ${restoredEasting.toFixed(2)}`);
-      math.push(`📍 Final Restored Corner: (${restoredNorthing.toFixed(2)}, ${restoredEasting.toFixed(2)})`);
-
-      document.getElementById("feedback").innerHTML = feedback.map(f => `<div>${f}</div>`).join("");
-      document.getElementById("mathPreview").innerHTML = math.join("<br/>");
-    }
-  </script>
-
+  <script src="script.js"></script>
 </body>
 </html>
