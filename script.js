@@ -211,6 +211,4 @@ function handleGridClick(event) {
 
   updateAnchors();
 }
-
-// ✅ Ensure grid is built on page load
 buildGrid();
