@@ -1,4 +1,4 @@
-// Generate serpentine grid
+
 const gridContainer = document.getElementById("grid");
 let selectedSection = null;
 
@@ -27,13 +27,13 @@ function updateSelectedInfo() {
     `Restoring ${corner} corner of Section ${selectedSection}`;
 }
 
-// Redraw canvas grid + points
+
 function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
   const canvas = document.getElementById("gridCanvas");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Draw grid
+
   const spacing = canvas.width / 6;
   ctx.strokeStyle = "#ccc";
   for (let i = 0; i <= 6; i++) {
@@ -48,7 +48,7 @@ function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
     ctx.stroke();
   }
 
-  // Helper to draw red point
+
   function drawPoint(x, y, label) {
     ctx.fillStyle = "red";
     ctx.beginPath();
@@ -59,7 +59,7 @@ function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
     ctx.fillText(label, x + 6, y - 6);
   }
 
-  // Normalize coordinates to canvas
+  
   function normalize(n, min, max) {
     return ((n - min) / (max - min)) * canvas.width;
   }
@@ -80,7 +80,7 @@ function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
   }
 }
 
-// Main logic
+
 function calculate() {
   const aN = parseFloat(document.getElementById("aNorthing").value);
   const bN = parseFloat(document.getElementById("bNorthing").value);
@@ -105,7 +105,7 @@ function calculate() {
   const feedback = [];
   const math = [];
 
-  // Directional validation
+
   if (aN > bN && aN > restoredNorthing) {
     feedback.push("✅ A is north of B and the restored corner.");
   } else {
@@ -130,7 +130,7 @@ function calculate() {
     feedback.push("⚠️ C should be west of D and the restored corner.");
   }
 
-  // Section span checks
+
   const nsValid = validSpans.some(span => Math.abs(nsSpan - span) <= buffer);
   const ewValid = validSpans.some(span => Math.abs(ewSpan - span) <= buffer);
 
@@ -142,7 +142,7 @@ function calculate() {
     ? `✅ EW span (${ewSpan} ft) is within ±${buffer} ft of a valid section multiple.`
     : `⚠️ EW span (${ewSpan} ft) is not near a valid section multiple.`);
 
-  // Math preview
+
   math.push(`NS Ratio = ${mAB} / ${rAB} = ${nsRatio.toFixed(4)}`);
   math.push(`EW Ratio = ${mCD} / ${rCD} = ${ewRatio.toFixed(4)}`);
   math.push(`Restored Northing = ${bN} + ${nsRatio.toFixed(4)} × ${rAB} = ${restoredNorthing.toFixed(2)}`);
@@ -155,6 +155,5 @@ function calculate() {
   drawGridAndPoints(aN, bN, cE, dE, restoredNorthing, restoredEasting);
 }
 
-// Update corner info on change
 document.getElementById("cornerSelect").onchange = updateSelectedInfo;
 
