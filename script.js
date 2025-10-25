@@ -1,4 +1,3 @@
-// True PLSS serpentine grid layout with top-down fix
 const gridContainer = document.getElementById("grid");
 let selectedSection = null;
 
