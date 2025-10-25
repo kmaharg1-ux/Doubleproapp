@@ -1,4 +1,3 @@
-/* Base layout */
 body {
   font-family: system-ui, sans-serif;
   padding: 20px;
@@ -45,7 +44,6 @@ button:hover {
   background-color: #0056b3;
 }
 
-/* Grid layout */
 #grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -75,7 +73,6 @@ button:hover {
   border-color: #f0ad4e;
 }
 
-/* Feedback and math preview */
 #feedback {
   margin-top: 10px;
   font-size: 14px;
@@ -94,7 +91,6 @@ button:hover {
   border-radius: 4px;
 }
 
-/* Canvas styling */
 canvas {
   display: block;
   margin: 20px auto;
@@ -102,7 +98,6 @@ canvas {
   background-color: #fff;
 }
 
-/* Responsive tweaks */
 @media (max-width: 600px) {
   body {
     padding: 10px;
