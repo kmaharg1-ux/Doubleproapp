@@ -1,128 +1,106 @@
+/* Reset and base styles */
 body {
-  font-family: sans-serif;
-  background: #f5f5f5;
-  padding: 1em;
+  margin: 0;
+  padding: 2rem;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(to bottom right, #f4f7fa, #e9eff5);
+  color: #333;
+  max-width: 900px;
+  margin: auto;
+}
+
+h1, h2 {
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
 }
 
 h1 {
-  text-align: center;
-  margin-bottom: 1em;
+  font-size: 2rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.5rem;
 }
 
-#grid {
-  display: grid;
-  grid-template-columns: repeat(6, 100px);
-  grid-template-rows: repeat(6, 100px);
-  gap: 2px;
-  background: #ddd;
-  position: relative;
-  width: max-content;
-  margin: 0 auto;
-}
-
-.cell {
+.section {
   background: #fff;
-  border: 1px solid #999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-  position: relative;
-}
-
-.pin {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  pointer-events: none;
-  box-shadow: 0 0 2px rgba(0,0,0,0.3);
-  z-index: 20;
-}
-
-.pin.red {
-  background: red;
-}
-
-.pin.green {
-  background: green;
-}
-
-#overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 600px;
-  height: 600px;
-  pointer-events: none;
-  z-index: 10;
-}
-
-#controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1em;
-  max-width: 600px;
-  margin: 0 auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 label {
-  display: flex;
-  flex-direction: column;
-  font-size: 0.9em;
+  display: inline-block;
+  margin: 0.5rem 1rem 0.5rem 0;
+  font-weight: 500;
 }
 
-input, select {
-  padding: 0.4em;
-  font-size: 1em;
-  margin-top: 0.2em;
+input {
+  padding: 0.4rem 0.6rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 120px;
+  transition: border-color 0.2s ease;
+}
+
+input:focus {
+  border-color: #3498db;
+  outline: none;
 }
 
 button {
-  padding: 0.6em 1em;
-  font-size: 1em;
-  background: #2c6e49;
+  background: #3498db;
   color: white;
   border: none;
-  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background: #3a8f5c;
+  background: #2980b9;
 }
 
-details {
-  margin: 1em auto;
-  max-width: 600px;
-  background: #fff;
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem;
   border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.1);
-  padding: 1em;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-summary {
-  font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  margin-bottom: 0.5em;
+.valid {
+  background: #e8fbe8;
+  border-left: 5px solid #2ecc71;
 }
 
-#mathOutput {
+.warn {
+  background: #fff8e6;
+  border-left: 5px solid #f39c12;
+}
+
+.error {
+  background: #fdecea;
+  border-left: 5px solid #e74c3c;
+}
+
+.math-preview {
+  font-family: 'Courier New', monospace;
+  background: #f0f4f8;
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #d0dce5;
   white-space: pre-wrap;
-  font-family: monospace;
-  font-size: 0.95em;
-  margin-top: 0.5em;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
-#restoredCoords {
-  font-size: 1.1em;
-  color: #2c6e49;
-  background: #eef6f2;
-  padding: 0.5em;
-  border-radius: 4px;
-  margin-top: 1em;
+ul {
+  padding-left: 1.2rem;
+}
+
+ul li {
+  margin-bottom: 0.4rem;
 }
