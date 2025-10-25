@@ -10,95 +10,102 @@
   <h1>PLSS Restoration Grid</h1>
 
   <div style="position: relative; width: max-content; margin: 0 auto;">
-    <div id="grid"></div>
+    <div id="grid" onclick="handleGridClick(event)"></div>
     <svg id="overlay"></svg>
   </div>
 
-  <div id="controls">
-    <h2>Step 1: Define Known Points</h2>
+  <details open>
+    <summary><strong>Step 1: Define Known Points</strong></summary>
+    <div id="controls">
+      <label>A Section: <input id="sectionA" type="number" min="1" max="36" /></label>
+      <label>A Corner:
+        <select id="cornerA">
+          <option value="NW">NW</option>
+          <option value="NE">NE</option>
+          <option value="SW">SW</option>
+          <option value="SE">SE</option>
+          <option value="N">N (Quarter)</option>
+          <option value="S">S (Quarter)</option>
+          <option value="E">E (Quarter)</option>
+          <option value="W">W (Quarter)</option>
+          <option value="C">Center</option>
+        </select>
+      </label>
 
-    <label>A Section: <input id="sectionA" type="number" min="1" max="36" /></label>
-    <label>A Corner:
-      <select id="cornerA">
-        <option value="NW">NW</option>
-        <option value="NE">NE</option>
-        <option value="SW">SW</option>
-        <option value="SE">SE</option>
-        <option value="N">N (Quarter)</option>
-        <option value="S">S (Quarter)</option>
-        <option value="E">E (Quarter)</option>
-        <option value="W">W (Quarter)</option>
-        <option value="C">Center</option>
-      </select>
-    </label>
+      <label>B Section: <input id="sectionB" type="number" min="1" max="36" /></label>
+      <label>B Corner:
+        <select id="cornerB">
+          <option value="NW">NW</option>
+          <option value="NE">NE</option>
+          <option value="SW">SW</option>
+          <option value="SE">SE</option>
+          <option value="N">N (Quarter)</option>
+          <option value="S">S (Quarter)</option>
+          <option value="E">E (Quarter)</option>
+          <option value="W">W (Quarter)</option>
+          <option value="C">Center</option>
+        </select>
+      </label>
 
-    <label>B Section: <input id="sectionB" type="number" min="1" max="36" /></label>
-    <label>B Corner:
-      <select id="cornerB">
-        <option value="NW">NW</option>
-        <option value="NE">NE</option>
-        <option value="SW">SW</option>
-        <option value="SE">SE</option>
-        <option value="N">N (Quarter)</option>
-        <option value="S">S (Quarter)</option>
-        <option value="E">E (Quarter)</option>
-        <option value="W">W (Quarter)</option>
-        <option value="C">Center</option>
-      </select>
-    </label>
+      <label>C Section: <input id="sectionC" type="number" min="1" max="36" /></label>
+      <label>C Corner:
+        <select id="cornerC">
+          <option value="NW">NW</option>
+          <option value="NE">NE</option>
+          <option value="SW">SW</option>
+          <option value="SE">SE</option>
+          <option value="N">N (Quarter)</option>
+          <option value="S">S (Quarter)</option>
+          <option value="E">E (Quarter)</option>
+          <option value="W">W (Quarter)</option>
+          <option value="C">Center</option>
+        </select>
+      </label>
 
-    <label>C Section: <input id="sectionC" type="number" min="1" max="36" /></label>
-    <label>C Corner:
-      <select id="cornerC">
-        <option value="NW">NW</option>
-        <option value="NE">NE</option>
-        <option value="SW">SW</option>
-        <option value="SE">SE</option>
-        <option value="N">N (Quarter)</option>
-        <option value="S">S (Quarter)</option>
-        <option value="E">E (Quarter)</option>
-        <option value="W">W (Quarter)</option>
-        <option value="C">Center</option>
-      </select>
-    </label>
+      <label>D Section: <input id="sectionD" type="number" min="1" max="36" /></label>
+      <label>D Corner:
+        <select id="cornerD">
+          <option value="NW">NW</option>
+          <option value="NE">NE</option>
+          <option value="SW">SW</option>
+          <option value="SE">SE</option>
+          <option value="N">N (Quarter)</option>
+          <option value="S">S (Quarter)</option>
+          <option value="E">E (Quarter)</option>
+          <option value="W">W (Quarter)</option>
+          <option value="C">Center</option>
+        </select>
+      </label>
 
-    <label>D Section: <input id="sectionD" type="number" min="1" max="36" /></label>
-    <label>D Corner:
-      <select id="cornerD">
-        <option value="NW">NW</option>
-        <option value="NE">NE</option>
-        <option value="SW">SW</option>
-        <option value="SE">SE</option>
-        <option value="N">N (Quarter)</option>
-        <option value="S">S (Quarter)</option>
-        <option value="E">E (Quarter)</option>
-        <option value="W">W (Quarter)</option>
-        <option value="C">Center</option>
-      </select>
-    </label>
+      <button onclick="updateAnchors()">Update Anchors</button>
+    </div>
+  </details>
 
-    <button onclick="updateAnchors()">Update Anchors</button>
+  <details>
+    <summary><strong>Step 2: Restoration Inputs</strong></summary>
+    <div id="controls">
+      <label>A Northing: <input id="northingA" type="number" oninput="previewMath()" /></label>
+      <label>B Northing: <input id="northingB" type="number" oninput="previewMath()" /></label>
+      <label>Record Distance A–B: <input id="recordAB" type="number" oninput="previewMath()" /></label>
+      <label>Measured Distance A–B: <input id="measuredAB" type="number" oninput="previewMath()" /></label>
 
-    <h2>Step 2: Restoration Inputs</h2>
+      <label>C Easting: <input id="eastingC" type="number" oninput="previewMath()" /></label>
+      <label>D Easting: <input id="eastingD" type="number" oninput="previewMath()" /></label>
+      <label>Record Distance C–D: <input id="recordCD" type="number" oninput="previewMath()" /></label>
+      <label>Measured Distance C–D: <input id="measuredCD" type="number" oninput="previewMath()" /></label>
 
-    <label>A Northing: <input id="northingA" type="number" /></label>
-    <label>B Northing: <input id="northingB" type="number" /></label>
-    <label>Record Distance A–B: <input id="recordAB" type="number" /></label>
-    <label>Measured Distance A–B: <input id="measuredAB" type="number" /></label>
+      <button onclick="calculateRestoredCorner()">Calculate Restored Corner</button>
+      <button onclick="resetGrid()">Reset</button>
+    </div>
+  </details>
 
-    <label>C Easting: <input id="eastingC" type="number" /></label>
-    <label>D Easting: <input id="eastingD" type="number" /></label>
-    <label>Record Distance C–D: <input id="recordCD" type="number" /></label>
-    <label>Measured Distance C–D: <input id="measuredCD" type="number" /></label>
-
-    <button onclick="calculateRestoredCorner()">Calculate Restored Corner</button>
-    <button onclick="resetGrid()">Reset</button>
-  </div>
-
-  <div id="math">
-    <h2>Math Breakdown</h2>
-    <pre id="mathOutput">Fill in inputs and click "Calculate Restored Corner" to see the math.</pre>
-  </div>
+  <details open>
+    <summary><strong>Step 3: Math Breakdown</strong></summary>
+    <div id="math">
+      <pre id="mathOutput">Fill in inputs to preview restoration math...</pre>
+      <div id="restoredCoords" style="font-weight: bold; margin-top: 1em;"></div>
+    </div>
+  </details>
 
   <script src="script.js"></script>
 </body>
