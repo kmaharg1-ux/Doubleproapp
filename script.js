@@ -28,7 +28,6 @@ function updateSelectedInfo() {
     `Restoring ${corner} corner of Section ${selectedSection}`;
 }
 
-// Redraw canvas grid + points
 function drawGridAndPoints(aN, bN, cE, dE, restoredN, restoredE) {
   const canvas = document.getElementById("gridCanvas");
   const ctx = canvas.getContext("2d");
