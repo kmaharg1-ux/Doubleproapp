@@ -77,7 +77,31 @@
     </div>
   </details>
 
-  <!-- Step 2 and Step 3 remain unchanged -->
+  <details>
+    <summary><strong>Step 2: Restoration Inputs</strong></summary>
+    <div id="controls">
+      <label>A Northing: <input id="northingA" type="number" oninput="previewMath()" /></label>
+      <label>B Northing: <input id="northingB" type="number" oninput="previewMath()" /></label>
+      <label>Record Distance A–B: <input id="recordAB" type="number" oninput="previewMath()" /></label>
+      <label>Measured Distance A–B: <input id="measuredAB" type="number" oninput="previewMath()" /></label>
+
+      <label>C Easting: <input id="eastingC" type="number" oninput="previewMath()" /></label>
+      <label>D Easting: <input id="eastingD" type="number" oninput="previewMath()" /></label>
+      <label>Record Distance C–D: <input id="recordCD" type="number" oninput="previewMath()" /></label>
+      <label>Measured Distance C–D: <input id="measuredCD" type="number" oninput="previewMath()" /></label>
+
+      <button onclick="calculateRestoredCorner()">Calculate Restored Corner</button>
+      <button onclick="resetGrid()">Reset</button>
+    </div>
+  </details>
+
+  <details open>
+    <summary><strong>Step 3: Math Breakdown</strong></summary>
+    <div id="math">
+      <pre id="mathOutput">Fill in inputs to preview restoration math...</pre>
+      <div id="restoredCoords" style="font-weight: bold; margin-top: 1em;"></div>
+    </div>
+  </details>
 
   <script src="script.js"></script>
 </body>
