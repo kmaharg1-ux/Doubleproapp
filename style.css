@@ -47,12 +47,9 @@ button:hover {
 #grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-template-rows: repeat(6, 1fr);
-  gap: 2px;
-  margin: 20px auto;
-  width: 100%;
-  max-width: 400px;
+  grid-auto-flow: row;
 }
+
 
 #grid div {
   border: 1px solid #ccc;
