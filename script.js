@@ -91,7 +91,7 @@ function updateAnchors() {
     ]);
   }
 
-  previewMath(); // trigger preview after anchors
+  previewMath();
 }
 
 function previewMath() {
@@ -139,7 +139,7 @@ Easting: ${restoredEasting.toFixed(2)}`;
 }
 
 function calculateRestoredCorner() {
-  previewMath(); // already calculated
+  previewMath();
 
   const restoredNorthing = parseFloat(restoredCoords.textContent.match(/Northing: ([\d.]+)/)?.[1]);
   const restoredEasting = parseFloat(restoredCoords.textContent.match(/Easting: ([\d.]+)/)?.[1]);
@@ -173,22 +173,6 @@ function resetGrid() {
   restoredCoords.textContent = "";
   buildGrid();
 }
-
-// 🧭 Tap-to-place anchors
-function handleGridClick(event) {
-  const cell = event.target.closest(".cell");
-  if (!cell) return;
-
-  const section = cell.dataset.section;
-  const rect = cell.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-
-  let corner = "C";
-  if (x < 33 && y < 33) corner = "NW";
-  else if (x > 66 && y < 33) corner = "NE";
-  else if (x  [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://github.com/MS901b/trigonometria_raios/tree/9a632c1c768255e36c3666c2b08665aa4cbddd2b/scripts%2Fmapinha.js?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId=EFA8719D-4FFD-402D-9997-7E908E2A1AB4&citationTitle=github.com&citationFullTitle=github.com&chatItemId=jx18nk27q5HDBHkkbdAmx)< 33
-// 🧭 Tap-to-place anchors (continued)
 function handleGridClick(event) {
   const cell = event.target.closest(".cell");
   if (!cell) return;
@@ -208,7 +192,6 @@ function handleGridClick(event) {
   else if (x < 33) corner = "W";
   else if (x > 66) corner = "E";
 
-  // Autofill first available anchor input
   const slots = [
     { section: "sectionA", corner: "cornerA" },
     { section: "sectionB", corner: "cornerB" },
@@ -228,3 +211,6 @@ function handleGridClick(event) {
 
   updateAnchors();
 }
+
+// ✅ Ensure grid is built on page load
+buildGrid();
