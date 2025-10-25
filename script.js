@@ -11,9 +11,9 @@ const sectionMap = [
 ];
 
 // Reverse both rows and columns to match PLSS layout (Section 1 in NE corner)
-for (let row = 0; row < 6; row++) {
-  const serpentineRow = sectionMap[row]; // top row = north
-  const isEvenRow = row % 2 === 0;
+for (let row = 5; row >= 0; row--) {
+  const serpentineRow = sectionMap[row];
+  const isEvenRow = (5 - row) % 2 === 0;
   const orderedRow = isEvenRow ? [...serpentineRow].reverse() : serpentineRow;
 
   for (let col = 0; col < 6; col++) {
