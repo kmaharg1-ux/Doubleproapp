@@ -1,5 +1,6 @@
 const grid = document.getElementById("grid");
 const mathOutput = document.getElementById("mathOutput");
+const restoredCoords = document.getElementById("restoredCoords");
 
 function serpentineSection(row, col) {
   return row % 2 === 0 ? 6 * row + (6 - col) : 6 * row + (col + 1);
@@ -89,9 +90,11 @@ function updateAnchors() {
       [C.x, C.y, D.x, D.y]
     ]);
   }
+
+  previewMath(); // trigger preview after anchors
 }
 
-function calculateRestoredCorner() {
+function previewMath() {
   const northingA = parseFloat(document.getElementById("northingA").value);
   const northingB = parseFloat(document.getElementById("northingB").value);
   const recordAB = parseFloat(document.getElementById("recordAB").value);
@@ -103,11 +106,11 @@ function calculateRestoredCorner() {
   const measuredCD = parseFloat(document.getElementById("measuredCD").value);
 
   if (
-    !A || !B || !C || !D ||
     isNaN(northingA) || isNaN(northingB) || isNaN(recordAB) || isNaN(measuredAB) ||
     isNaN(eastingC) || isNaN(eastingD) || isNaN(recordCD) || isNaN(measuredCD)
   ) {
-    mathOutput.textContent = "Please fill in all inputs before calculating.";
+    mathOutput.textContent = "Waiting for full inputs to preview math...";
+    restoredCoords.textContent = "";
     return;
   }
 
@@ -116,6 +119,32 @@ function calculateRestoredCorner() {
 
   const restoredNorthing = northingA + nsRatio * (northingB - northingA);
   const restoredEasting = eastingC + ewRatio * (eastingD - eastingC);
+
+  mathOutput.textContent = `
+Live Math Preview:
+
+1. NS Ratio = Measured AB / Record AB = ${measuredAB} / ${recordAB} = ${nsRatio.toFixed(4)}
+2. EW Ratio = Measured CD / Record CD = ${measuredCD} / ${recordCD} = ${ewRatio.toFixed(4)}
+
+3. Restored Northing = ${northingA} + ${nsRatio.toFixed(4)} × (${northingB} - ${northingA})
+                     = ${restoredNorthing.toFixed(2)}
+
+4. Restored Easting = ${eastingC} + ${ewRatio.toFixed(4)} × (${eastingD} - ${eastingC})
+                    = ${restoredEasting.toFixed(2)}
+`;
+
+  restoredCoords.textContent = `Restored Corner:
+Northing: ${restoredNorthing.toFixed(2)}
+Easting: ${restoredEasting.toFixed(2)}`;
+}
+
+function calculateRestoredCorner() {
+  previewMath(); // already calculated
+
+  const restoredNorthing = parseFloat(restoredCoords.textContent.match(/Northing: ([\d.]+)/)?.[1]);
+  const restoredEasting = parseFloat(restoredCoords.textContent.match(/Easting: ([\d.]+)/)?.[1]);
+
+  if (isNaN(restoredNorthing) || isNaN(restoredEasting)) return;
 
   const gridX = (restoredEasting / 6000) * 600;
   const gridY = (restoredNorthing / 6000) * 600;
@@ -127,21 +156,6 @@ function calculateRestoredCorner() {
     [C.x, C.y, D.x, D.y],
     [gridX, gridY, gridX, gridY]
   ]);
-
-  mathOutput.textContent = `
-Math Breakdown:
-
-1. NS Ratio = Measured AB / Record AB = ${measuredAB} / ${recordAB} = ${nsRatio.toFixed(4)}
-2. EW Ratio = Measured CD / Record CD = ${measuredCD} / ${recordCD} = ${ewRatio.toFixed(4)}
-
-3. Restored Northing = A_northing + NS Ratio × (B_northing - A_northing)
-                     = ${northingA} + ${nsRatio.toFixed(4)} × (${northingB} - ${northingA})
-                     = ${restoredNorthing.toFixed(2)}
-
-4. Restored Easting = C_easting + EW Ratio × (D_easting - C_easting)
-                    = ${eastingC} + ${ewRatio.toFixed(4)} × (${eastingD} - ${eastingC})
-                    = ${restoredEasting.toFixed(2)}
-`;
 }
 
 function resetGrid() {
@@ -155,8 +169,62 @@ function resetGrid() {
   ];
   ids.forEach(id => document.getElementById(id).value = "");
   document.getElementById("overlay").innerHTML = "";
-  mathOutput.textContent = "Fill in inputs and click \"Calculate Restored Corner\" to see the math.";
+  mathOutput.textContent = "Fill in inputs to preview restoration math...";
+  restoredCoords.textContent = "";
   buildGrid();
 }
 
-buildGrid();
+// 🧭 Tap-to-place anchors
+function handleGridClick(event) {
+  const cell = event.target.closest(".cell");
+  if (!cell) return;
+
+  const section = cell.dataset.section;
+  const rect = cell.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  let corner = "C";
+  if (x < 33 && y < 33) corner = "NW";
+  else if (x > 66 && y < 33) corner = "NE";
+  else if (x  [9F742443-6C92-4C44-BF58-8F5A7C53B6F1](https://github.com/MS901b/trigonometria_raios/tree/9a632c1c768255e36c3666c2b08665aa4cbddd2b/scripts%2Fmapinha.js?citationMarker=9F742443-6C92-4C44-BF58-8F5A7C53B6F1&citationId=EFA8719D-4FFD-402D-9997-7E908E2A1AB4&citationTitle=github.com&citationFullTitle=github.com&chatItemId=jx18nk27q5HDBHkkbdAmx)< 33
+// 🧭 Tap-to-place anchors (continued)
+function handleGridClick(event) {
+  const cell = event.target.closest(".cell");
+  if (!cell) return;
+
+  const section = cell.dataset.section;
+  const rect = cell.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+
+  let corner = "C";
+  if (x < 33 && y < 33) corner = "NW";
+  else if (x > 66 && y < 33) corner = "NE";
+  else if (x < 33 && y > 66) corner = "SW";
+  else if (x > 66 && y > 66) corner = "SE";
+  else if (y < 33) corner = "N";
+  else if (y > 66) corner = "S";
+  else if (x < 33) corner = "W";
+  else if (x > 66) corner = "E";
+
+  // Autofill first available anchor input
+  const slots = [
+    { section: "sectionA", corner: "cornerA" },
+    { section: "sectionB", corner: "cornerB" },
+    { section: "sectionC", corner: "cornerC" },
+    { section: "sectionD", corner: "cornerD" }
+  ];
+
+  for (const slot of slots) {
+    const sectionInput = document.getElementById(slot.section);
+    const cornerInput = document.getElementById(slot.corner);
+    if (!sectionInput.value) {
+      sectionInput.value = section;
+      cornerInput.value = corner;
+      break;
+    }
+  }
+
+  updateAnchors();
+}
