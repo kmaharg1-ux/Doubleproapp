@@ -1,14 +1,19 @@
-// Generate correct serpentine grid (Section 1 in NE corner)
+// Correct PLSS serpentine grid layout using sectionMap
 const gridContainer = document.getElementById("grid");
 let selectedSection = null;
 
+const sectionMap = [
+  [6, 5, 4, 3, 2, 1],
+  [7, 8, 9, 10, 11, 12],
+  [18, 17, 16, 15, 14, 13],
+  [19, 20, 21, 22, 23, 24],
+  [30, 29, 28, 27, 26, 25],
+  [31, 32, 33, 34, 35, 36]
+];
+
 for (let row = 0; row < 6; row++) {
   for (let col = 0; col < 6; col++) {
-    let base = 6 * row;
-    let sectionNum = row % 2 === 0
-      ? 36 - base - (5 - col)  // even rows: right to left
-      : 36 - base - col;       // odd rows: left to right
-
+    let sectionNum = sectionMap[row][col];
     const cell = document.createElement("div");
     cell.textContent = sectionNum;
     cell.dataset.section = sectionNum;
